@@ -10,9 +10,13 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@semaphore-protocol/group": "^4.0.0-beta.12",
+        "@semaphore-protocol/identity": "^4.0.0-beta.12",
+        "@semaphore-protocol/proof": "^4.0.0-beta.12",
         "@zk-kit/eddsa-poseidon": "^1.0.2",
         "circomlib": "^2.0.5",
         "circomlibjs": "^0.1.7",
+        "ethers": "6.10.0",
         "mocha": "^10.4.0",
         "poseidon-lite": "^0.2.0",
         "snarkjs": "^0.7.4"

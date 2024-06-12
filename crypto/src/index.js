@@ -1,9 +1,34 @@
 const snarkjs = require("snarkjs");
 const { poseidon3 } = require("poseidon-lite");
-const {
-    deriveSecretScalar,
-} = require("@zk-kit/eddsa-poseidon");
+const { deriveSecretScalar } = require("@zk-kit/eddsa-poseidon");
+const { encodeBytes32String } = require("ethers/abi");
+const { toBigInt } = require("ethers/utils");
 
+const { Identity } = require("@semaphore-protocol/identity");
+
+const { generateProof, verifyProof } = require("@semaphore-protocol/proof");
+
+function convertMessage(message) {
+    try {
+        return toBigInt(message);
+    } catch (e) {
+        return toBigInt(encodeBytes32String(message));
+    }
+}
+
+async function ProveMPKMemb(sk, group, message) {
+    const identity = new Identity(sk);
+    const scope = "Boquila";
+    const proof = await generateProof(identity, group, message, scope);
+    return proof;
+}
+
+async function VerifyMPKMemb(proof, group, message) {
+    const isValid = await verifyProof(proof);
+    const checkRoot = proof.merkleTreeRoot === group.root.toString();
+    const checkMessage = proof.message === convertMessage(message).toString();
+    return isValid && checkRoot && checkMessage;
+}
 
 async function ReplaceCPK(masterSecretKey, webName, i, iPlusOne) {
     // child keys
@@ -42,5 +67,7 @@ async function VerifyReplacedCPK(proof) {
     return isValid;
 }
 
+exports.ProveMPKMemb = ProveMPKMemb;
+exports.VerifyMPKMemb = VerifyMPKMemb;
 exports.ReplaceCPK = ReplaceCPK;
 exports.VerifyReplacedCPK = VerifyReplacedCPK;

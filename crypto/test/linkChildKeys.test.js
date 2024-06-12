@@ -1,11 +1,39 @@
 const assert = require("assert");
 const { poseidon3 } = require("poseidon-lite");
 const { derivePublicKey } = require("@zk-kit/eddsa-poseidon");
+const { Identity } = require("@semaphore-protocol/identity");
+const { Group } = require("@semaphore-protocol/group");
 
-const { ReplaceCPK, VerifyReplacedCPK } = require("../src");
+const {
+    ReplaceCPK,
+    VerifyReplacedCPK,
+    ProveMPKMemb,
+    VerifyMPKMemb,
+} = require("../src");
 
 describe("Boquila", function () {
     this.timeout(100000);
+    describe("#ProveMPKMemb/VerifyMPKMemb", function () {
+        it("should prove and verify MPK Membership", async function () {
+            const sk = "user1";
+            const identity = new Identity(sk); // user
+            const identity1 = new Identity();
+            const identity2 = new Identity();
+            const identity3 = new Identity();
+            const message = "message";
+
+            const group = new Group([
+                identity.commitment, // user
+                identity1.commitment,
+                identity2.commitment,
+                identity3.commitment,
+            ]);
+            const proof = await ProveMPKMemb(sk, group, message);
+
+            const isValid = await VerifyMPKMemb(proof, group, message);
+            assert.equal(isValid, true);
+        });
+    });
     describe("#ReplaceCPK/VerifyReplacedCPK", function () {
         it("should prove and verify CPK", async function () {
             const masterSecretKey =
