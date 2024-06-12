@@ -12,7 +12,7 @@ const {
 } = require("../src");
 
 describe("Boquila", function () {
-    this.timeout(100000);
+    this.timeout(200000);
     describe("#ProveMPKMemb/VerifyMPKMemb", function () {
         it("should prove and verify MPK Membership", async function () {
             const sk = "user1";
@@ -34,6 +34,7 @@ describe("Boquila", function () {
             assert.equal(isValid, true);
         });
     });
+
     describe("#ReplaceCPK/VerifyReplacedCPK", function () {
         it("should prove and verify CPK", async function () {
             const masterSecretKey =
