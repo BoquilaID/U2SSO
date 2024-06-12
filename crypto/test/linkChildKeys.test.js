@@ -2,11 +2,11 @@ const assert = require("assert");
 const { poseidon3 } = require("poseidon-lite");
 const { derivePublicKey } = require("@zk-kit/eddsa-poseidon");
 
-const { ProveCPK, VerifyCPK } = require("../src");
+const { ReplaceCPK, VerifyReplacedCPK } = require("../src");
 
 describe("Boquila", function () {
     this.timeout(100000);
-    describe("#ProveCPK/VerifyCPK", function () {
+    describe("#ReplaceCPK/VerifyReplacedCPK", function () {
         it("should prove and verify CPK", async function () {
             const masterSecretKey =
                 "0001020304050607080900010203040506070809000102030405060708090001";
@@ -30,7 +30,12 @@ describe("Boquila", function () {
             // public keys
             const pubKeyi = derivePublicKey(privKeyi);
             const pubKeyiPlusOne = derivePublicKey(privKeyiPlusOne);
-            const proof = await ProveCPK(masterSecretKey, webName, i, iPlusOne);
+            const proof = await ReplaceCPK(
+                masterSecretKey,
+                webName,
+                i,
+                iPlusOne
+            );
 
             // check public keys
             assert.equal(
@@ -51,7 +56,7 @@ describe("Boquila", function () {
             );
 
             // check proof
-            const isValid = await VerifyCPK(proof);
+            const isValid = await VerifyReplacedCPK(proof);
             assert.equal(isValid, true);
         });
     });

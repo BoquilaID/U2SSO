@@ -5,7 +5,7 @@ const {
 } = require("@zk-kit/eddsa-poseidon");
 
 
-async function ProveCPK(masterSecretKey, webName, i, iPlusOne) {
+async function ReplaceCPK(masterSecretKey, webName, i, iPlusOne) {
     // child keys
     const childSecretKeyi = poseidon3([masterSecretKey, webName, i]);
     const childSecretKeyiPlusOne = poseidon3([
@@ -32,7 +32,7 @@ async function ProveCPK(masterSecretKey, webName, i, iPlusOne) {
     return proof;
 }
 
-async function VerifyCPK(proof) {
+async function VerifyReplacedCPK(proof) {
     const vkey = require("../link_child_keys_js.json");
     const isValid = await snarkjs.groth16.verify(
         vkey,
@@ -42,5 +42,5 @@ async function VerifyCPK(proof) {
     return isValid;
 }
 
-exports.ProveCPK = ProveCPK;
-exports.VerifyCPK = VerifyCPK;
+exports.ReplaceCPK = ReplaceCPK;
+exports.VerifyReplacedCPK = VerifyReplacedCPK;
