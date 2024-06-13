@@ -97,7 +97,7 @@ endif
 TESTS =
 if USE_TESTS
 noinst_PROGRAMS += tests
-tests_SOURCES = src/tests.c
+tests_SOURCES = src/tests_boquila.c
 tests_CPPFLAGS = -DSECP256K1_BUILD -I$(top_srcdir)/src -I$(top_srcdir)/include $(SECP_INCLUDES) $(SECP_TEST_INCLUDES)
 if !ENABLE_COVERAGE
 tests_CPPFLAGS += -DVERIFY
@@ -214,6 +214,4 @@ if ENABLE_MODULE_SURJECTIONPROOF
 include src/modules/surjection/Makefile.am.include
 endif
 
-if ENABLE_MODULE_BOQUILA
-include src/modules/boquila/Makefile.am.include
-endif
+include src/modules/ringcip/Makefile.am.include

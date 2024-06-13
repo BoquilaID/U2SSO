@@ -1,8 +1,0 @@
-//
-// Created by jayamine on 6/13/24.
-//
-
-#ifndef BOQUILA_SECP256K1_BOQUILA_H
-#define BOQUILA_SECP256K1_BOQUILA_H
-
-#endif //BOQUILA_SECP256K1_BOQUILA_H

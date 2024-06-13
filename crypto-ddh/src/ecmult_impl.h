@@ -1063,6 +1063,8 @@ static int secp256k1_ecmult_multi_var_simple(const secp256k1_ecmult_context *ctx
     secp256k1_scalar szero;
     secp256k1_gej tmpj;
 
+    secp256k1_gej_set_infinity(&tmpj);
+
     secp256k1_scalar_set_int(&szero, 0);
     /* r = inp_g_sc*G */
     secp256k1_gej_set_infinity(r);

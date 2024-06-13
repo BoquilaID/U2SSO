@@ -1,3 +1,0 @@
-include_HEADERS += include/secp256k1_boquila.h
-noinst_HEADERS += src/modules/boquila/main_impl.h
-noinst_HEADERS += src/modules/boquila/tests_impl.h

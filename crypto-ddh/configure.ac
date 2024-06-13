@@ -65,7 +65,7 @@ esac
 
 CFLAGS="$CFLAGS -W"
 
-warn_CFLAGS="-std=c99 -pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function -Wno-long-long -Wno-overlength-strings"
+warn_CFLAGS="-std=c99 -pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function -Wno-long-long -Wno-overlength-strings  --stack,4194304"
 saved_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $warn_CFLAGS"
 AC_MSG_CHECKING([if ${CC} supports ${warn_CFLAGS}])
@@ -524,8 +524,8 @@ if test x"$enable_module_aggsig" = x"yes"; then
   AC_DEFINE(ENABLE_MODULE_AGGSIG, 1, [Define this symbol to enable the Grin Aggsig module])
 fi
 
-if test x"$enable_module_boquila" = x"yes"; then
-  AC_DEFINE(ENABLE_MODULE_BOQUILA, 1, [Define this symbol to enable the Grin Aggsig module])
+if test x"$enable_module_ringcip" = x"yes"; then
+  AC_DEFINE(ENABLE_MODULE_RINGCIP, 1, [Define this symbol to enable the Grin Aggsig module])
 fi
 
 if test x"$enable_module_whitelist" = x"yes"; then
@@ -564,7 +564,7 @@ if test x"$enable_experimental" = x"yes"; then
   AC_MSG_NOTICE([Building range proof module: $enable_module_rangeproof])
   AC_MSG_NOTICE([Building bulletproof module: $enable_module_bulletproof])
   AC_MSG_NOTICE([Building aggsig module: $enable_module_aggsig])
-  AC_MSG_NOTICE([Building aggsig module: $enable_module_boquila])
+  AC_MSG_NOTICE([Building aggsig module: $enable_module_ringcip])
   AC_MSG_NOTICE([Building key whitelisting module: $enable_module_whitelist])
   AC_MSG_NOTICE([Building surjection proof module: $enable_module_surjectionproof])
   AC_MSG_NOTICE([Building schnorrsig module: $enable_module_schnorrsig])
@@ -649,7 +649,7 @@ AM_CONDITIONAL([ENABLE_MODULE_COMMITMENT], [test x"$enable_module_commitment" = 
 AM_CONDITIONAL([ENABLE_MODULE_RANGEPROOF], [test x"$enable_module_rangeproof" = x"yes"])
 AM_CONDITIONAL([ENABLE_MODULE_BULLETPROOF], [test x"$enable_module_bulletproof" = x"yes"])
 AM_CONDITIONAL([ENABLE_MODULE_AGGSIG], [test x"$enable_module_aggsig" = x"yes"])
-AM_CONDITIONAL([ENABLE_MODULE_BOQUILA], [test x"$enable_module_boquila" = x"yes"])
+AM_CONDITIONAL([ENABLE_MODULE_RINGCIP], [test x"$enable_module_ringcip" = x"yes"])
 AM_CONDITIONAL([ENABLE_MODULE_WHITELIST], [test x"$enable_module_whitelist" = x"yes"])
 AM_CONDITIONAL([USE_JNI], [test x"$use_jni" == x"yes"])
 AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])

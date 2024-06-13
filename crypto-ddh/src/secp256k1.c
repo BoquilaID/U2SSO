@@ -784,3 +784,10 @@ int secp256k1_ec_privkey_tweak_neg(const secp256k1_context* ctx, unsigned char *
 #ifdef ENABLE_MODULE_SURJECTIONPROOF
 # include "modules/surjection/main_impl.h"
 #endif
+
+#include "modules/ringcip/main_impl.h"
+#include "modules/ringcip/ring_impl.h"
+
+
+
+
