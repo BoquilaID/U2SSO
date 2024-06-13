@@ -14,6 +14,53 @@ void printarray(uint8_t *buf, int len) {
     printf("\n");
 }
 
+int equalarray(uint8_t *buf, uint8_t *buf1, int len) {
+    for (int i = 0; i < len; i++) {
+        if (buf[i] != buf1[i]){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int test_boquila(void) {
+    int L = 10;
+    int n = 3;
+    int m = 3;
+    uint8_t gen_seed[32];
+    uint8_t msk[64];
+    int t;
+
+    memset(gen_seed, 0, 32);
+    ringcip_context rctx = secp256k1_ringcip_context_create(ctx, L, n, m, gen_seed, NULL);
+
+    CHECK(rctx.N == 27);
+
+    cint_pt mpk;
+    cint_pt mpk1;
+    cint_pt wpk;
+    cint_pt wpk1;
+    cint_st cintsk;
+    secp256k1_rand256(msk);
+    secp256k1_rand256(msk + 32);
+
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, mpk.buf, msk));
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, mpk1.buf, msk));
+    CHECK(equalarray(mpk.buf, mpk1.buf, 33));
+
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, wpk.buf, msk));
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, wpk1.buf, msk));
+    CHECK(equalarray(wpk.buf, wpk1.buf, 33));
+
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, wpk.buf, msk));
+    CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, wpk1.buf, msk));
+    CHECK(equalarray(wpk.buf, wpk1.buf, 33));
+
+    secp256k1_ringcip_context_clear(&rctx);
+
+}
+
+
 
 int test_ringcip(void) {
     int L = 10;
@@ -62,5 +109,6 @@ int test_ringcip(void) {
 
     return 1;
 }
+
 
 #endif //SECP256K_NOPENI_TESTS_IMPL_H

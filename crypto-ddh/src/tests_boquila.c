@@ -329,6 +329,7 @@ int main(int argc, char **argv) {
     }
 
     test_ringcip();
+    test_boquila();
 
     printf("passed ringcip tests!\n");
 

@@ -46,6 +46,82 @@ typedef struct zero_com_proof_struct {
 
 
 /**
+ * Create the master secret public keys from the given master secret key
+ * @param ctx - main context
+ * @param rctx -  ring context
+ * @param mpk -  mpk (33 bytes)
+ * @param msk -  master secret key of 64 bytes
+ * @return 1 (success) or 0 (failure)
+ */
+SECP256K1_API int secp256k1_boquila_gen_mpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *mpk,
+        const uint8_t *msk)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+/**
+ * Create the web public keys from the master secret key
+ * @param ctx - main context
+ * @param rctx -  ring context
+ * @param wpk -  web public key for a webservice of ``name'' (33 bytes)
+ * @param msk -  master secret key (64 bytes)
+ * @param name -  name or identity of the web service
+ * @param name_len -  name byte size
+ * @return web public key
+ */
+SECP256K1_API int secp256k1_boquila_derive_webpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t* wpk,
+        const uint8_t* msk,
+        const uint8_t* name,
+        int name_len)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
+
+/**
+ * Create the child secret keys from the master secret key
+ * @param ctx - main context
+ * @param rctx -  ring context
+ * @param csk -  child secret key of 32 bytes
+ * @param msk -  master secret key (64 bytes)
+ * @param name -  name or identity of the web service
+ * @param name_len -  name byte size
+ * @param count -  child key count (4 bytes)
+ * @return child secret key
+ */
+SECP256K1_API int secp256k1_boquila_derive_csk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t* csk,
+        const uint8_t* msk,
+        const uint8_t* name,
+        int name_len,
+        uint8_t* count)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
+
+
+/**
+ * Create the child public keys from the master secret key
+ * @param ctx - main context
+ * @param rctx -  ring context
+ * @param cpk -  child public key for a webservice of ``name, count'' (33 bytes)
+ * @param msk -  master secret key
+ * @param name -  name or identity of the web service
+ * @param name_len -  name byte size
+ * @param count -  child key count
+ * @return child public key
+ */
+SECP256K1_API int secp256k1_boquila_derive_cpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t* cpk,
+        const uint8_t* csk)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+/**
  * Create the context object
  * @param ctx - main context
  * @param L -  range bit

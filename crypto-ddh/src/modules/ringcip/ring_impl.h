@@ -207,7 +207,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
 
     secp256k1_generator_load(&tmpG, &rctx->geng);
     secp256k1_generator_load(&tmpH, &rctx->genh);
-    secp256k1_generator_load(&tmpMu, &rctx->genmu);
+    //secp256k1_generator_load(&tmpMu, &rctx->genmu);
 
     secp256k1_rand256_self(buf);
     secp256k1_scalar_set_b32(&rA, buf, &overflow);
@@ -420,7 +420,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
 
     secp256k1_generator_load(&tmpG, &rctx->geng);
     secp256k1_generator_load(&tmpH, &rctx->genh);
-    secp256k1_generator_load(&tmpMu, &rctx->genmu);
+    //secp256k1_generator_load(&tmpMu, &rctx->genmu);
 
     // Load the proof
     int pointer = 0;
