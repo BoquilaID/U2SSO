@@ -1,0 +1,31 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+    crypto:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install circom
+              run: |
+                  sudo wget -O /usr/bin/circom https://github.com/iden3/circom/releases/download/v2.1.9/circom-linux-amd64
+                  sudo chmod +x /usr/bin/circom
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.x"
+            - name: Install snarkjs
+              run: npm install -g snarkjs
+            - name: Install dependencies
+              run: |
+                  cd crypto
+                  npm install
+            - name: Build circuits
+              run: |
+                  cd crypto
+                  npm run build
+            - name: Run tests
+              run: |
+                  cd crypto
+                  npm test
