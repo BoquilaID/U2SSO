@@ -73,5 +73,3 @@ template Semaphore(MAX_DEPTH) {
     // More information here: https://geometry.xyz/notebook/groth16-malleability.
     signal dummySquare <== message * message;
 }
-
-component main = Semaphore(10);

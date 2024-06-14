@@ -45,9 +45,6 @@ jobs:
             - name: Build circuits
               run: |
                   cd crypto
-                  cd semaphore_cpp
-                  make
-                  cd ..
                   ./scripts/benchmark.sh
             - name: Run tests
               run: |
