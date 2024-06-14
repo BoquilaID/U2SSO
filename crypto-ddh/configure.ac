@@ -26,7 +26,7 @@ fi
 AM_PROG_CC_C_O
 
 AC_PROG_CC_C99
-if test x"$ac_cv_prog_cc_c89" = x"no"; then
+if test x"$ac_cv_prog_cc_c99" = x"no"; then
   AC_MSG_ERROR([c99 compiler support required])
 fi
 AM_PROG_AS
