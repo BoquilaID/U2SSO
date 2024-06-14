@@ -78,17 +78,17 @@ ringcip_context secp256k1_ringcip_context_create(const secp256k1_context* ctx,
         if(secp256k1_generator_generate(ctx, &rctx.genmu, buf))
             break;
     }
-    rctx.multigen = (secp256k1_ge*) malloc(rctx.n*rctx.m*sizeof(secp256k1_ge));
+    rctx.multigen = (secp256k1_generator*) malloc(rctx.n*rctx.m*sizeof(secp256k1_generator));
     for (j = 0; j < rctx.n*rctx.m; j++) {
         while (1) {
             secp256k1_sha256_initialize(&sha);
             secp256k1_sha256_write(&sha, buf, 32);
             secp256k1_sha256_finalize(&sha, buf);
 
-            if(secp256k1_generator_generate(ctx, &gen, buf))
+            if(secp256k1_generator_generate(ctx, &rctx.multigen[j], buf))
                 break;
         }
-        secp256k1_generator_load(&rctx.multigen[j], &gen);
+        //secp256k1_generator_load(&rctx.multigen[j], &gen);
     }
     return rctx;
 }
@@ -121,6 +121,7 @@ int secp256k1_create_cint(const secp256k1_context* ctx, ringcip_context *rctx, c
 
     secp256k1_ge tmpG;
     secp256k1_ge tmpMu;
+    secp256k1_ge tmp;
     secp256k1_gej tmpGj;
 
     /* g, mu */
@@ -128,10 +129,10 @@ int secp256k1_create_cint(const secp256k1_context* ctx, ringcip_context *rctx, c
     secp256k1_generator_load(&tmpMu, &rctx->genmu);
 
     secp256k1_pedersen_ecmult(&tmpGj, &csk->key, csk->v, &tmpMu, &tmpG);
-    secp256k1_ge_set_gej(&c->c, &tmpGj);
+    secp256k1_ge_set_gej(&tmp, &tmpGj);
 
     // serialize
-    secp256k1_ge_save1(c->buf, &c->c);
+    secp256k1_ge_save1(c->buf, &tmp);
 
     return 1;
 }
@@ -147,7 +148,6 @@ int secp256k1_serialize_cint(const secp256k1_context* ctx, uint8_t *buf, cint_pt
 int secp256k1_parse_cint(const secp256k1_context* ctx, cint_pt *c, uint8_t *buf) {
     ARG_CHECK(c != NULL);
     ARG_CHECK(buf!= NULL);
-    secp256k1_ge_load1(buf, &c->c);
     memcpy(&c->buf, buf, 33);
     return 1;
 }
@@ -162,15 +162,23 @@ int secp256k1_create_multival_com(const secp256k1_context* ctx, const ringcip_co
     secp256k1_ge tmp;
     secp256k1_gej tmpj;
 
+    secp256k1_ge* multigen = (secp256k1_ge*) malloc(rctx->n*rctx->m*sizeof(secp256k1_ge));
+    for (int j = 0; j < rctx->n*rctx->m; j++) {
+        secp256k1_generator_load(&multigen[j], &rctx->multigen[j]);
+    }
+
     /* g, mu */
     secp256k1_generator_load(&tmp, &rctx->genh);
     secp256k1_ecmult_const(&tmpj, &tmp, key, 256);
     secp256k1_ge_set_gej(com, &tmpj);
     for (i = 0; i < rctx->n * rctx->m; i++) {
-        secp256k1_ecmult_const(&tmpj, &rctx->multigen[i], &vals[i], 256); // todo
+        secp256k1_ecmult_const(&tmpj, &multigen[i], &vals[i], 256); // todo
         secp256k1_gej_add_ge(&tmpj, &tmpj, com);
         secp256k1_ge_set_gej(com, &tmpj);
     }
+
+    free(multigen);
+
     return 1;
 }
 
@@ -214,6 +222,16 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     int overflow, t, i, j;
     secp256k1_sha256 sha;
 
+    secp256k1_ge* multigen = (secp256k1_ge*) malloc(rctx->n*rctx->m*sizeof(secp256k1_ge));
+    for (int j = 0; j < rctx->n*rctx->m; j++) {
+        secp256k1_generator_load(&multigen[j], &rctx->multigen[j]);
+    }
+
+    secp256k1_ge c_ge[ring_size];
+    for (int j = 0; j < ring_size; j++) {
+        secp256k1_ge_load1(Cs[j].buf, &c_ge[j]);
+    }
+
     secp256k1_generator_load(&tmpG, &rctx->geng);
     secp256k1_generator_load(&tmpH, &rctx->genh);
     //secp256k1_generator_load(&tmpMu, &rctx->genmu);
@@ -238,6 +256,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
         secp256k1_scalar_negate(&a[j][0], &tmp); // a[j][0] = - sum_{i=1}^{n} a[j][i]
     }
     if (overflow) {
+        free(multigen);
         return 0;
     }
 
@@ -284,7 +303,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     for (j = 0; j < m; j++)  {
         for (i = 0; i < rctx->n; i++) {
             secp256k1_scalar_set_int(&tmp, get_jth(j, rctx->n, index) == i);
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &tmp, 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &tmp, 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &B);
             secp256k1_ge_set_gej(&B, &tmpj);
         }
@@ -295,7 +314,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_ge_set_gej(&A, &tmpj);
     for (j = 0; j < m; j++)  {
         for (i = 0; i < rctx->n; i++) {
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &a[j][i], 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &a[j][i], 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &A);
             secp256k1_ge_set_gej(&A, &tmpj);
         }
@@ -311,7 +330,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
             secp256k1_scalar_set_int(&tmp1, 1);
             secp256k1_scalar_add(&tmp, &tmp, &tmp1);
             secp256k1_scalar_mul(&tmp, &tmp, &a[j][i]);
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &tmp, 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &tmp, 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &C);
             secp256k1_ge_set_gej(&C, &tmpj);
         }
@@ -324,7 +343,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
         for (i = 0; i < rctx->n; i++) {
             secp256k1_scalar_mul(&tmp, &a[j][i], &a[j][i]);
             secp256k1_scalar_negate(&tmp, &tmp);
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &tmp, 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &tmp, 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &D);
             secp256k1_ge_set_gej(&D, &tmpj);
         }
@@ -336,7 +355,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
         secp256k1_ecmult_const(&tmpj, &tmpG, &rho[j], 256);
         secp256k1_ge_set_gej(&Q[j], &tmpj);
         for (t = 0; t < ring_size; t++) {
-            secp256k1_ecmult_const(&tmpj, &Cs[t].c, &p[t][j], 256);
+            secp256k1_ecmult_const(&tmpj, &c_ge[t], &p[t][j], 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &Q[j]);
             secp256k1_ge_set_gej(&Q[j], &tmpj);
         }
@@ -408,6 +427,8 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     pointer += 32;
     secp256k1_scalar_get_b32(proof + pointer, &z);
 
+    free(multigen);
+
     return 1;
 
 }
@@ -435,6 +456,16 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_gej tmpj;
     int overflow, t, i, j;
     secp256k1_sha256 sha;
+
+    secp256k1_ge* multigen = (secp256k1_ge*) malloc(rctx->n*rctx->m*sizeof(secp256k1_ge));
+    for (int j = 0; j < rctx->n*rctx->m; j++) {
+        secp256k1_generator_load(&multigen[j], &rctx->multigen[j]);
+    }
+
+    secp256k1_ge c_ge[ring_size];
+    for (int j = 0; j < ring_size; j++) {
+        secp256k1_ge_load1(Cs[j].buf, &c_ge[j]);
+    }
 
     secp256k1_generator_load(&tmpG, &rctx->geng);
     secp256k1_generator_load(&tmpH, &rctx->genh);
@@ -480,16 +511,19 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     }
     secp256k1_scalar_set_b32(&zA, proof + pointer, &overflow);
     if (overflow) {
+        free(multigen);
         return 0;
     }
     pointer += 32;
     secp256k1_scalar_set_b32(&zC, proof + pointer, &overflow);
     if (overflow) {
+        free(multigen);
         return 0;
     }
     pointer += 32;
     secp256k1_scalar_set_b32(&z, proof + pointer, &overflow);
     if (overflow) {
+        free(multigen);
         return 0;
     }
 
@@ -515,7 +549,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
         for (j = 0; j < m; j++) {
             secp256k1_scalar_mul(&tmp, &tmp, &f[j][get_jth(j, rctx->n, t)]);
         }
-        secp256k1_ecmult_const(&tmpj, &Cs[t].c, &tmp, 256);
+        secp256k1_ecmult_const(&tmpj, &c_ge[t], &tmp, 256);
         secp256k1_gej_add_ge(&tmpj, &tmpj, &LHS);
         secp256k1_ge_set_gej(&LHS, &tmpj);
     }
@@ -528,6 +562,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_ge_save1(lbuf, &LHS);
     secp256k1_ge_save1(rbuf, &RHS);
     if (memcmp(lbuf, rbuf, 33) != 0) {
+        free(multigen);
         return 0;
     }
 
@@ -541,7 +576,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_ge_set_gej(&RHS, &tmpj);
     for (j = 0; j < m; j++)  {
         for (i = 0; i < rctx->n; i++) {
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &f[j][i], 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &f[j][i], 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &RHS);
             secp256k1_ge_set_gej(&RHS, &tmpj);
         }
@@ -550,6 +585,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_ge_save1(lbuf, &LHS);
     secp256k1_ge_save1(rbuf, &RHS);
     if (memcmp(lbuf, rbuf, 33) != 0) {
+        free(multigen);
         return 0;
     }
 
@@ -565,7 +601,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
             secp256k1_scalar_negate(&tmp, &f[j][i]);
             secp256k1_scalar_add(&tmp, &tmp, &x);
             secp256k1_scalar_mul(&tmp, &tmp, &f[j][i]);
-            secp256k1_ecmult_const(&tmpj, &rctx->multigen[j*rctx->n + i], &tmp, 256);
+            secp256k1_ecmult_const(&tmpj, &multigen[j*rctx->n + i], &tmp, 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &RHS);
             secp256k1_ge_set_gej(&RHS, &tmpj);
         }
@@ -574,8 +610,11 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     secp256k1_ge_save1(lbuf, &LHS);
     secp256k1_ge_save1(rbuf, &RHS);
     if (memcmp(lbuf, rbuf, 33) != 0) {
+        free(multigen);
         return 0;
     }
+
+    free(multigen);
 
     return 1;
 }

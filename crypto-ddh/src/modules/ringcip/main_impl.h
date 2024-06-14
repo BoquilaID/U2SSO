@@ -227,8 +227,8 @@ int secp256k1_boquila_prove_memmpk(
     for (int i = 0; i < N; i++) {
         secp256k1_ge_load_boquila(mpks[i].buf, &tmpg);
         secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
-        secp256k1_ge_set_gej(&cints[i].c, &tmpj);
-        secp256k1_ge_save_boquila(cints[i].buf, &cints[i].c);
+        secp256k1_ge_set_gej(&tmp, &tmpj);
+        secp256k1_ge_save_boquila(cints[i].buf, &tmp);
     }
 
     // sk creation
@@ -292,8 +292,8 @@ int secp256k1_boquila_verify_memmpk(
     for (int i = 0; i < N; i++) {
         secp256k1_ge_load_boquila(mpks[i].buf, &tmpg);
         secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
-        secp256k1_ge_set_gej(&cints[i].c, &tmpj);
-        secp256k1_ge_save_boquila(cints[i].buf, &cints[i].c);
+        secp256k1_ge_set_gej(&tmp, &tmpj);
+        secp256k1_ge_save_boquila(cints[i].buf, &tmp);
     }
 
     // create m

@@ -16,14 +16,13 @@ typedef struct ringcip_context_struct {
     int n; // N = n^m when N is the ring size and n is the base
     int m;
     int N;
-    secp256k1_ge *multigen;
+    secp256k1_generator *multigen;
     secp256k1_generator geng;
     secp256k1_generator genh;
     secp256k1_generator genmu;
 } ringcip_context;
 
 typedef struct cint_public_struct {
-    secp256k1_ge c; // could be uninitialized
     uint8_t buf[33]; // could be uninitialized
 } cint_pt;
 
