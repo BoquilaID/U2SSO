@@ -29,3 +29,17 @@ jobs:
               run: |
                   cd crypto
                   npm test
+    ddh:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build
+              run: |
+                  cd crypto-ddh
+                  ./autogen.sh
+                  ./configure
+                  make
+            - name: Test
+              run: |
+                  cd crypto-ddh
+                  ./tests
