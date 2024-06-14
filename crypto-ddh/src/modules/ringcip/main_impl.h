@@ -242,7 +242,7 @@ int secp256k1_boquila_prove_memmpk(
     secp256k1_scalar_clear(&scalara);
     secp256k1_scalar_clear(&scalarb);
 
-    return secp256k1_create_zero_mcom_proof(ctx, rctx, proof, cints, j, &tmpsc);
+    return secp256k1_create_zero_mcom_proof(ctx, rctx, proof, cints, j, &tmpsc, N);
 }
 
 int secp256k1_boquila_verify_memmpk(
@@ -284,7 +284,7 @@ int secp256k1_boquila_verify_memmpk(
         secp256k1_ge_set_gej(&cints[i].c, &tmpj);
         secp256k1_ge_save_boquila(cints[i].buf, &cints[i].c);
     }
-    return secp256k1_verify_zero_mcom_proof(ctx, rctx, proof, cints);
+    return secp256k1_verify_zero_mcom_proof(ctx, rctx, proof, cints, N);
 }
 
 

@@ -38,7 +38,7 @@ ringcip_context secp256k1_ringcip_context_create(const secp256k1_context* ctx,
     rctx.L = L;
     rctx.n = n;
     rctx.m = m;
-    rctx.N = 1;
+    rctx.N = 1; // n^m
     for (j = 0; j < rctx.m; j++) {
         rctx.N *= n;
     }
@@ -190,12 +190,12 @@ int secp256k1_zero_mcom_get_size(const ringcip_context *rctx) {
 
 
 int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip_context *rctx,
-                                     uint8_t *proof, cint_pt *Cs, int index, secp256k1_scalar *key) {
+                                     uint8_t *proof, cint_pt *Cs, int index, secp256k1_scalar *key, int ring_size) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(Cs != NULL);
     ARG_CHECK(key != NULL);
-    ARG_CHECK(index < rctx->N);
+    ARG_CHECK(index < rctx.N);
 
     uint8_t buf[32];
     secp256k1_scalar rA, rB, rC, rD, rho[rctx->m], a[rctx->m][rctx->n], p[rctx->N][rctx->m+1], tmpD, tmpA, tmpP;
@@ -233,7 +233,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     }
 
     // p_{t}(x) = prod_{j=0}^m (a_{j,t_j} + delta_{hat{t}_j, t_j}x)
-    for (t = 0; t < rctx->N; t++) {
+    for (t = 0; t < ring_size; t++) {
         /* Set p[i][l] = 0 */
         for (j = 0; j < rctx->m + 1; j++) {
             secp256k1_scalar_set_int(&p[t][j], 0);
@@ -326,7 +326,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     for (j = 0; j < rctx->m; j++) {
         secp256k1_ecmult_const(&tmpj, &tmpG, &rho[j], 256);
         secp256k1_ge_set_gej(&Q[j], &tmpj);
-        for (t = 0; t < rctx->N; t++) {
+        for (t = 0; t < ring_size; t++) {
             secp256k1_ecmult_const(&tmpj, &Cs[t].c, &p[t][j], 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &Q[j]);
             secp256k1_ge_set_gej(&Q[j], &tmpj);
@@ -350,7 +350,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
 
     // get x
     secp256k1_sha256_initialize(&sha);
-    for (t = 0; t < rctx->N; t++) {
+    for (t = 0; t < ring_size; t++) {
         secp256k1_sha256_write(&sha, Cs[t].buf, 33);
     }
     secp256k1_sha256_write(&sha, proof, pointer);
@@ -405,7 +405,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
 
 
 int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip_context *rctx,
-                                     uint8_t *proof, cint_pt *Cs) {
+                                     uint8_t *proof, cint_pt *Cs, int ring_size) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(Cs != NULL);
@@ -439,7 +439,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
 
     // create x
     secp256k1_sha256_initialize(&sha);
-    for (t = 0; t < rctx->N; t++) {
+    for (t = 0; t < ring_size; t++) {
         secp256k1_sha256_write(&sha, Cs[t].buf, 33);
     }
     secp256k1_sha256_write(&sha, proof, pointer);
@@ -492,7 +492,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
         secp256k1_scalar_mul(&tmp1, &tmp1, &x);
     }
 
-    for (t = 0; t < rctx->N; t++) {
+    for (t = 0; t < ring_size; t++) {
         secp256k1_scalar_set_int(&tmp, 1);
         for (j = 0; j < rctx->m; j++) {
             secp256k1_scalar_mul(&tmp, &tmp, &f[j][get_jth(j, rctx->n, t)]);

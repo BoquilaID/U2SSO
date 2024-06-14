@@ -297,6 +297,7 @@ int secp256k1_zero_mcom_get_size(const ringcip_context *rctx);
  * @param Cs -  commitment set
  * @param index - index of the zero value commitment
  * @param key - secret key of the zero value commitment
+ * @param ring_size - number of Cs
  * @return 1- successful, 0 - failure
  */
 int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx,
@@ -304,7 +305,8 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx,
                                      uint8_t *proof,
                                      cint_pt *Cs,
                                      int index,
-                                     secp256k1_scalar *key)
+                                     secp256k1_scalar *key,
+                                     int ring_size)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6);
 
 /**
@@ -315,12 +317,14 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
  * @param rctx - ring cip context
  * @param proof - input
  * @param Cs commitment set
+ * @param ring_size - number of Cs
  * @return 1- successful, 0 - failure
  */
 int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx,
                                      const ringcip_context *rctx,
                                      uint8_t *proof,
-                                     cint_pt *Cs)
+                                     cint_pt *Cs,
+                                     int ring_size)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
 # ifdef __cplusplus
