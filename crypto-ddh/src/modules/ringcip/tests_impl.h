@@ -70,8 +70,8 @@ int test_boquila(void) {
 
     // ==============================================
 
-    int N = 10;
-    for (int t = 2; t < rctx.N; t++) {
+    int N = rctx.n;
+    for (int m = 1; m < rctx.m; m++) {
         pk_t mpks[N];
         uint8_t msks[N][64];
         for (int i = 0; i < N; i++) {
@@ -83,9 +83,9 @@ int test_boquila(void) {
         int j = 0;
         CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
 
-        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx) * sizeof(uint8_t));
-        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N));
-        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N));
+        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
 
         // ==============================================
 
@@ -98,6 +98,40 @@ int test_boquila(void) {
         CHECK(secp256k1_boquila_verify_newcpk(ctx, &rctx, proofnew, &wpk, &cpk, chal));
 
         free(proof);
+
+        N *= rctx.n;
+    }
+
+    N = rctx.n -1;
+    for (int m = 1; m < rctx.m; m++) {
+        pk_t mpks[N];
+        uint8_t msks[N][64];
+        for (int i = 0; i < N; i++) {
+            secp256k1_rand256(msks[i]);
+            secp256k1_rand256(msks[i] + 32);
+            CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpks[i], msks[i]));
+        }
+
+        int j = 0;
+        CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+
+        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
+
+        // ==============================================
+
+        secp256k1_rand256(r);
+        secp256k1_rand256(r + 32);
+        uint8_t chal[32];
+        memset(chal, 0xff, 32);
+        uint8_t proofnew[64 + 33];
+        CHECK(secp256k1_boquila_prove_newcpk(ctx, &rctx, proofnew, msks[j], r, name, name_len, &wpk, &cpk, chal));
+        CHECK(secp256k1_boquila_verify_newcpk(ctx, &rctx, proofnew, &wpk, &cpk, chal));
+
+        free(proof);
+
+        N *= rctx.n;
     }
 
     secp256k1_ringcip_context_clear(&rctx);
@@ -139,12 +173,12 @@ int test_ringcip(void) {
             CHECK(secp256k1_create_cint(ctx, &rctx, &Cs[t], &Csks[t]));
         }
     }
-    uint8_t *proof = (uint8_t*) malloc(secp256k1_zero_mcom_get_size(&rctx)*sizeof(uint8_t));
-    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index, &Csks[index].key, N));
-    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N));
+    uint8_t *proof = (uint8_t*) malloc(secp256k1_zero_mcom_get_size(&rctx, rctx.m)*sizeof(uint8_t));
+    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index, &Csks[index].key, N, rctx.m));
+    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N, rctx.m));
 
-    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index + 1, &Csks[index].key, N));
-    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N) == 0);
+    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index + 1, &Csks[index].key, N, rctx.m));
+    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N, rctx.m) == 0);
 
     free(proof);
     secp256k1_ringcip_context_clear(&rctx);
