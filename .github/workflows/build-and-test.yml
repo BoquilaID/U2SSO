@@ -49,10 +49,10 @@ jobs:
                   cd semaphore_cpp
                   make
                   cd ..
-                  ./semaphore_cpp/semaphore input.json witness.wtns
-            - name: Use rapidsnark
-              run: |
-                  ./rapidsnark/package/bin/prover ./crypto/semaphore_js.zkey ./crypto/witness.wtns ./crypto/proof.json ./crypto/public.json
+                  time {
+                    ./semaphore_cpp/semaphore input.json witness.wtns
+                    ./rapidsnark/package/bin/prover ./crypto/semaphore_js.zkey ./crypto/witness.wtns ./crypto/proof.json ./crypto/public.json
+                  }
             - name: Run tests
               run: |
                   cd crypto
