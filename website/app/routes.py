@@ -9,8 +9,15 @@ def home():
 
 @app.route('/register', methods=['POST'])
 def register():
-    user_data = request.json
-    public_key = user_data.get('publicKeyPem')
-    print(f"Received public key: {public_key}")
-    result = register_user(user_data)
-    return jsonify(result)
+    try:
+        user_data = request.json
+        print(f"Received JSON data: {user_data}")
+        # For now, let's use dummy values for `child_public_key` and `index_value`
+        user_data['website_public_key'] = user_data.get('publicKeyPem')
+        user_data['child_public_key'] = "dummy_child_public_key"
+        user_data['index_value'] = 1
+        result = register_user(user_data)
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 400
