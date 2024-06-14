@@ -275,13 +275,10 @@ int main (int argc, char *argv[]) {
      }
    */
   
-   auto t_mid = std::chrono::high_resolution_clock::now();
-   std::cout << std::chrono::duration<double, std::milli>(t_mid-t_start).count()<<std::endl;
-
    writeBinWitness(ctx,wtnsfile);
   
    auto t_end = std::chrono::high_resolution_clock::now();
-   std::cout << std::chrono::duration<double, std::milli>(t_end-t_mid).count()<<std::endl;
+   std::cout << std::chrono::duration<double, std::milli>(t_end-t_start).count()<<std::endl;
 
   }  
 }
