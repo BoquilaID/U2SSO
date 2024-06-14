@@ -48,7 +48,8 @@ jobs:
                   npm run build
                   cd semaphore_cpp
                   make
-                  ./semaphore input.json witness.wtns
+                  cd ..
+                  ./semaphore_cpp/semaphore input.json witness.wtns
             - name: Use rapidsnark
               run: |
                   ./rapidsnark/package/bin/prover ./crypto/semaphore_js.zkey ./crypto/witness.wtns ./crypto/proof.json ./crypto/public.json
