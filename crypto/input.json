@@ -1,8 +1,8 @@
 {
     "secret": "21888242871839275222246405745257275088548364400416034343698204186575808495616",
-    "merkleProofLength": 2,
-    "merkleProofIndices": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "merkleProofSiblings": [2, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-    "scope": 32,
-    "message": 43
+    "merkleProofLength": "2",
+    "merkleProofIndices": ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+    "merkleProofSiblings": ["2", "3", "0", "0", "0", "0", "0", "0", "0", "0"],
+    "scope": "32",
+    "message": "43"
 }
