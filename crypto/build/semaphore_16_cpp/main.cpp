@@ -256,7 +256,7 @@ int main (int argc, char *argv[]) {
     std::string jsonfile(argv[1]);
     std::string wtnsfile(argv[2]);
   
-    // auto t_start = std::chrono::high_resolution_clock::now();
+    auto t_start = std::chrono::high_resolution_clock::now();
 
    Circom_Circuit *circuit = loadCircuit(datfile);
 
