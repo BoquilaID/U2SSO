@@ -58,24 +58,6 @@ describe("Boquila", function () {
         });
     });
 
-    describe("#Pedersen main", function () {
-        it("should prove pederson output", async function () {
-            const babyJub = await buildBabyjub();
-            const Fr = babyJub.F;
-            const pk = await genMasterPk([2, 1]);
-            console.log(Fr.toString(pk[0]));
-            const inputs = {
-                in: [1, 2],
-            };
-            const proof = await snarkjs.groth16.fullProve(
-                inputs,
-                "semaphore_js/semaphore.wasm",
-                "semaphore_js.zkey"
-            );
-            console.log(proof);
-        });
-    });
-
     describe("#ProveMPKMemb/VerifyMPKMemb", function () {
         it("should prove and verify MPK Membership", async function () {
             const sk = "user1";
