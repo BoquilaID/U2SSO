@@ -45,7 +45,6 @@ jobs:
             - name: Build circuits
               run: |
                   cd crypto
-                  npm run build
                   cd semaphore_cpp
                   make
                   cd ..
