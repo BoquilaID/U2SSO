@@ -8,26 +8,26 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                submodules: "recursive"
+                  submodules: "recursive"
             - name: install requirements
               uses: awalsh128/cache-apt-pkgs-action@v1
               with:
-                packages: build-essential cmake m4 nasm
-                version: 1.0
+                  packages: build-essential cmake m4 nasm nlohmann-json3-dev libgmp-dev
+                  version: 1.0
             - name: download rapidsnark
               run: git clone https://github.com/iden3/rapidsnark.git
             - name: build gmp for Linux x86_64
               run: |
-                cd rapidsnark
-                git submodule init
-                git submodule update
-                if [[ ! -d "depends/gmp/package" ]]; then ./build_gmp.sh host; fi
+                  cd rapidsnark
+                  git submodule init
+                  git submodule update
+                  if [[ ! -d "depends/gmp/package" ]]; then ./build_gmp.sh host; fi
             - name: Build prover Linux
               run: |
-                cd rapidsnark
-                mkdir -p build_prover && cd build_prover
-                cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../package
-                make -j4 && make install
+                  cd rapidsnark
+                  mkdir -p build_prover && cd build_prover
+                  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../package
+                  make -j4 && make install
             - name: Install circom
               run: |
                   sudo wget -O /usr/bin/circom https://github.com/iden3/circom/releases/download/v2.1.9/circom-linux-amd64
@@ -48,10 +48,10 @@ jobs:
                   npm run build
                   cd semaphore_cpp
                   make
-                  ./semaphore 
+                  ./semaphore input.json witness.wtns
             - name: Use rapidsnark
               run: |
-                  rapidsnark/package/bin/prover
+                  ./rapidsnark/package/bin/prover ./crypto/semaphore_js.zkey ./crypto/witness.wtns ./crypto/proof.json ./crypto/public.json
             - name: Run tests
               run: |
                   cd crypto
