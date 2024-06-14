@@ -262,11 +262,15 @@ int main (int argc, char *argv[]) {
 
    Circom_CalcWit *ctx = new Circom_CalcWit(circuit);
   
+   auto start = std::chrono::high_resolution_clock::now();
    loadJson(ctx, jsonfile);
    if (ctx->getRemaingInputsToBeSet()!=0) {
      std::cerr << "Not all inputs have been set. Only " << get_main_input_signal_no()-ctx->getRemaingInputsToBeSet() << " out of " << get_main_input_signal_no() << std::endl;
      assert(false);
    }
+   auto end = std::chrono::high_resolution_clock::now();
+   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+   std::cout << "Witness calculation time: " << duration.count() << " milliseconds" << std::endl;
    /*
      for (uint i = 0; i<get_size_of_witness(); i++){
      FrElement x;
