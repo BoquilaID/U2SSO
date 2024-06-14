@@ -7,6 +7,8 @@
 
 #include "include/secp256k1_ringcip.h"
 
+#include <time.h>
+
 void printarray(uint8_t *buf, int len) {
     for (int i = 0; i < len; i++) {
         printf("%d ", buf[i]);
@@ -184,6 +186,120 @@ int test_ringcip(void) {
     secp256k1_ringcip_context_clear(&rctx);
 
     return 1;
+}
+
+
+int test_boquila_bench(void) {
+    int L = 10;
+    int n = 2;
+    int m = 10;
+    uint8_t gen_seed[32];
+    uint8_t msk[64];
+    uint8_t r[64];
+    uint8_t name[4] = {'a', 'b', 'c', 'd'};
+    int32_t name_len = 4;
+    int t;
+
+    memset(gen_seed, 0, 32);
+    ringcip_context rctx = secp256k1_ringcip_context_create(ctx, L, n, m, gen_seed, NULL);
+
+    CHECK(rctx.N == 1024); // 8, 16,
+
+    pk_t mpk;
+    pk_t mpk1;
+    pk_t wpk;
+    pk_t wpk1;
+    pk_t cpk;
+    pk_t cpk1;
+    uint8_t csk[32];
+    uint8_t csk1[32];
+    cint_st cintsk;
+    secp256k1_rand256(msk);
+    secp256k1_rand256(msk + 32);
+
+    pk_t mpks[1024];
+    uint8_t msks[1024][64];
+    for (int i = 0; i < 1024; i++) {
+        secp256k1_rand256(msks[i]);
+        secp256k1_rand256(msks[i] + 32);
+        CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpks[i], msks[i]));
+    }
+    int j = 0;
+    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+
+    int N = 8;
+    for (int m = 3; m < rctx.m; m++) {
+        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+        clock_t begin = clock();
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+        clock_t end = clock();
+        double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
+         begin = clock();
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
+        end = clock();
+        double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
+        free(proof);
+        N *= rctx.n;
+        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time, verify_time);
+    }
+    secp256k1_ringcip_context_clear(&rctx);
+}
+
+
+int test_boquila_3_bench(void) {
+    int L = 10;
+    int n = 3;
+    int m = 6;
+    uint8_t gen_seed[32];
+    uint8_t msk[64];
+    uint8_t r[64];
+    uint8_t name[4] = {'a', 'b', 'c', 'd'};
+    int32_t name_len = 4;
+    int t;
+
+    memset(gen_seed, 0, 32);
+    ringcip_context rctx = secp256k1_ringcip_context_create(ctx, L, n, m, gen_seed, NULL);
+
+    CHECK(rctx.N == 729); // 8, 16,
+
+    pk_t mpk;
+    pk_t mpk1;
+    pk_t wpk;
+    pk_t wpk1;
+    pk_t cpk;
+    pk_t cpk1;
+    uint8_t csk[32];
+    uint8_t csk1[32];
+    cint_st cintsk;
+    secp256k1_rand256(msk);
+    secp256k1_rand256(msk + 32);
+
+    pk_t mpks[1024];
+    uint8_t msks[1024][64];
+    for (int i = 0; i < 1024; i++) {
+        secp256k1_rand256(msks[i]);
+        secp256k1_rand256(msks[i] + 32);
+        CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpks[i], msks[i]));
+    }
+    int j = 0;
+    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+
+    int N = 9;
+    for (int m = 3; m < rctx.m; m++) {
+        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+        clock_t begin = clock();
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+        clock_t end = clock();
+        double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
+        begin = clock();
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
+        end = clock();
+        double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
+        free(proof);
+        N *= rctx.n;
+        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time, verify_time);
+    }
+    secp256k1_ringcip_context_clear(&rctx);
 }
 
 
