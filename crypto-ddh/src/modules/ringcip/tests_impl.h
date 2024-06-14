@@ -206,11 +206,8 @@ int test_boquila_bench(void) {
     CHECK(rctx.N == 1024); // 8, 16,
 
     pk_t mpk;
-    pk_t mpk1;
     pk_t wpk;
-    pk_t wpk1;
     pk_t cpk;
-    pk_t cpk1;
     uint8_t csk[32];
     uint8_t csk1[32];
     cint_st cintsk;
