@@ -1,8 +1,10 @@
 const assert = require("assert");
+const snarkjs = require("snarkjs");
 const { poseidon3 } = require("poseidon-lite");
 const { derivePublicKey } = require("@zk-kit/eddsa-poseidon");
 const { Identity } = require("@semaphore-protocol/identity");
 const { Group } = require("@semaphore-protocol/group");
+const buildBabyjub = require("circomlibjs").buildBabyjub;
 
 const {
     genMasterPk,
@@ -53,6 +55,24 @@ describe("Boquila", function () {
             const csk = deriveChildSecretKey(msk, name, count);
             const cpk = await deriveChildPublicKey(csk);
             assert.equal(cpk.length, 2);
+        });
+    });
+
+    describe("#Pedersen main", function () {
+        it("should prove pederson output", async function () {
+            const babyJub = await buildBabyjub();
+            const Fr = babyJub.F;
+            const pk = await genMasterPk([2, 1]);
+            console.log(Fr.toString(pk[0]));
+            const inputs = {
+                in: [1, 2],
+            };
+            const proof = await snarkjs.groth16.fullProve(
+                inputs,
+                "semaphore_js/semaphore.wasm",
+                "semaphore_js.zkey"
+            );
+            console.log(proof);
         });
     });
 
