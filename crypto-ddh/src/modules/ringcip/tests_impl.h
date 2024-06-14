@@ -206,11 +206,8 @@ int test_boquila_bench(void) {
     CHECK(rctx.N == 1024); // 8, 16,
 
     pk_t mpk;
-    pk_t mpk1;
     pk_t wpk;
-    pk_t wpk1;
     pk_t cpk;
-    pk_t cpk1;
     uint8_t csk[32];
     uint8_t csk1[32];
     cint_st cintsk;
@@ -228,19 +225,25 @@ int test_boquila_bench(void) {
     CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
 
     int N = 8;
-    for (int m = 3; m < rctx.m; m++) {
-        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
-        clock_t begin = clock();
-        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
-        clock_t end = clock();
-        double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
-         begin = clock();
-        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
-        end = clock();
-        double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
-        free(proof);
-        N *= rctx.n;
-        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time, verify_time);
+    int test_cases = 10;
+    double proving_time = 0;
+    double verify_time = 0;
+    for (int tests = 0; tests < test_cases; tests++) {
+        for (int m = 3; m < rctx.m; m++) {
+            uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+            clock_t begin = clock();
+            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+            clock_t end = clock();
+            proving_time += (double) (end - begin) / CLOCKS_PER_SEC;
+            begin = clock();
+            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
+            end = clock();
+            verify_time += (double) (end - begin) / CLOCKS_PER_SEC;
+            free(proof);
+
+            N *= rctx.n;
+        }
+        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
@@ -285,19 +288,25 @@ int test_boquila_3_bench(void) {
     CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
 
     int N = 9;
-    for (int m = 3; m < rctx.m; m++) {
-        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
-        clock_t begin = clock();
-        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
-        clock_t end = clock();
-        double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
-        begin = clock();
-        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
-        end = clock();
-        double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
-        free(proof);
-        N *= rctx.n;
-        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time, verify_time);
+    int test_cases = 10;
+    double proving_time = 0;
+    double verify_time = 0;
+    for (int tests = 0; tests < test_cases; tests++) {
+        for (int m = 3; m < rctx.m; m++) {
+            uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
+            clock_t begin = clock();
+            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m));
+            clock_t end = clock();
+            proving_time += (double) (end - begin) / CLOCKS_PER_SEC;
+            begin = clock();
+            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m));
+            end = clock();
+            verify_time += (double) (end - begin) / CLOCKS_PER_SEC;
+            free(proof);
+
+            N *= rctx.n;
+        }
+        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
