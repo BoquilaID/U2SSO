@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <secp256k1_ringcip.h>
+#include <secp256k1.h>
 
 int main() {
     secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
@@ -21,7 +21,7 @@ int main() {
     int32_t name_len = 4;
     int t;
 
-    memset(gen_seed, 0, 32);
+    /*memset(gen_seed, 0, 32);
     ringcip_context rctx = secp256k1_ringcip_context_create(ctx, L, n, m, gen_seed, NULL);
 
     printf("Maximum N: ", rctx.N);
@@ -66,5 +66,5 @@ int main() {
         N *= rctx.n;
         printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time, verify_time);
     }
-    secp256k1_ringcip_context_clear(&rctx);
+    secp256k1_ringcip_context_clear(&rctx);*/
 }
