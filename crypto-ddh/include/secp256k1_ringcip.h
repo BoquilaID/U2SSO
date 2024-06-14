@@ -44,6 +44,10 @@ typedef struct zero_com_proof_struct {
     uint8_t bufD[32]; // could be uninitialized
 } gb_zero_proof_t;
 
+typedef struct pk_struct {
+    uint8_t buf[33];
+} pk_t;
+
 
 /**
  * Create the master secret public keys from the given master secret key
@@ -56,7 +60,7 @@ typedef struct zero_com_proof_struct {
 SECP256K1_API int secp256k1_boquila_gen_mpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
-        uint8_t *mpk,
+        pk_t *mpk,
         const uint8_t *msk)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
@@ -74,7 +78,7 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
 SECP256K1_API int secp256k1_boquila_derive_webpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
-        uint8_t* wpk,
+        pk_t* wpk,
         const uint8_t* msk,
         const uint8_t* name,
         int name_len)
@@ -116,9 +120,73 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
 SECP256K1_API int secp256k1_boquila_derive_cpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
-        uint8_t* cpk,
+        pk_t* cpk,
         const uint8_t* csk)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+SECP256K1_API int secp256k1_boquila_prove_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* msk,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        int32_t j,
+        int32_t N)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+SECP256K1_API int secp256k1_boquila_verify_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        pk_t * wpk,
+        int32_t N)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
+
+
+SECP256K1_API int secp256k1_boquila_prove_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* msk,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        int32_t j,
+        int32_t N)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+SECP256K1_API int secp256k1_boquila_prove_newcpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *proof,
+        const uint8_t* msk,
+        const uint8_t* r,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        pk_t * cpk,
+        uint8_t *chal)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
+
+
+SECP256K1_API int secp256k1_boquila_verify_newcpk(
+        const secp256k1_context* ctx,
+        const ringcip_context* rctx,
+        uint8_t *proof,
+        pk_t * wpk,
+        pk_t * cpk,
+        uint8_t *chal)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
+
+
 
 
 /**
