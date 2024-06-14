@@ -33,13 +33,13 @@ typedef struct cint_secret_struct {
 } cint_st;
 
 typedef struct zero_com_proof_struct {
-    secp256k1_ge A; // could be uninitialized
+    //secp256k1_ge A; // could be uninitialized
     uint8_t bufA[32]; // could be uninitialized
-    secp256k1_ge B; // could be uninitialized
+    //secp256k1_ge B; // could be uninitialized
     uint8_t bufB[32]; // could be uninitialized
-    secp256k1_ge C; // could be uninitialized
+    //secp256k1_ge C; // could be uninitialized
     uint8_t bufC[32]; // could be uninitialized
-    secp256k1_ge D; // could be uninitialized
+    //secp256k1_ge D; // could be uninitialized
     uint8_t bufD[32]; // could be uninitialized
 } gb_zero_proof_t;
 
