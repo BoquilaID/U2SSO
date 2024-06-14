@@ -19,6 +19,8 @@ jobs:
             - name: build gmp for Linux x86_64
               run: |
                 cd rapidsnark
+                git submodule init
+                git submodule update
                 if [[ ! -d "depends/gmp/package" ]]; then ./build_gmp.sh host; fi
             - name: Build prover Linux
               run: |
