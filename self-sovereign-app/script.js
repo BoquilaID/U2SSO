@@ -3,6 +3,10 @@ document.getElementById('registerButton')?.addEventListener('click', function() 
     window.location.href = 'second.html';
 });
 
+// document.getElementById('nextButton')?.addEventListener('click', function() {
+//     window.location.href = 'index.html';
+// });
+
 window.addEventListener('DOMContentLoaded', () => {
     const loadingElement = document.getElementById('loading');
     const linesElement = document.getElementById('info-lines');
@@ -41,6 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     // Show the content
                     linesElement.style.display = 'flex';
+                
                 },3000);
 
             } catch (error) {
