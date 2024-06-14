@@ -135,7 +135,7 @@ SECP256K1_API int secp256k1_boquila_prove_memmpk(
         int name_len,
         pk_t * wpk,
         int32_t j,
-        int32_t N)
+        int32_t N, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
 
@@ -145,22 +145,8 @@ SECP256K1_API int secp256k1_boquila_verify_memmpk(
         uint8_t *proof,
         pk_t *mpks,
         pk_t * wpk,
-        int32_t N)
+        int32_t N, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
-
-
-SECP256K1_API int secp256k1_boquila_prove_memmpk(
-        const secp256k1_context* ctx,
-        const ringcip_context* rctx,
-        uint8_t *proof,
-        pk_t *mpks,
-        const uint8_t* msk,
-        const uint8_t* name,
-        int name_len,
-        pk_t * wpk,
-        int32_t j,
-        int32_t N)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
 
 SECP256K1_API int secp256k1_boquila_prove_newcpk(
@@ -285,7 +271,7 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
  * @param rctx
  * @return
  */
-int secp256k1_zero_mcom_get_size(const ringcip_context *rctx);
+int secp256k1_zero_mcom_get_size(const ringcip_context *rctx, int m);
 
 /**
  * create a proof according to
@@ -306,7 +292,7 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx,
                                      cint_pt *Cs,
                                      int index,
                                      secp256k1_scalar *key,
-                                     int ring_size)
+                                     int ring_size, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6);
 
 /**
@@ -324,7 +310,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx,
                                      const ringcip_context *rctx,
                                      uint8_t *proof,
                                      cint_pt *Cs,
-                                     int ring_size)
+                                     int ring_size, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
 # ifdef __cplusplus

@@ -192,7 +192,7 @@ int secp256k1_boquila_prove_memmpk(
         int name_len,
         pk_t * wpk,
         int32_t j,
-        int32_t N) {
+        int32_t N, int m) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(mpks != NULL);
@@ -242,7 +242,18 @@ int secp256k1_boquila_prove_memmpk(
     secp256k1_scalar_clear(&scalara);
     secp256k1_scalar_clear(&scalarb);
 
-    return secp256k1_create_zero_mcom_proof(ctx, rctx, proof, cints, j, &tmpsc, N);
+//    // create m
+//    int tmpN = N;
+//    int m = 1;
+//    for (int t = 0; t < rctx->m; t++) {
+//        tmpN = tmpN/rctx->n;
+//        m++;
+//        if (tmpN == 0) {
+//            break;
+//        }
+//    }
+
+    return secp256k1_create_zero_mcom_proof(ctx, rctx, proof, cints, j, &tmpsc, N, m);
 }
 
 int secp256k1_boquila_verify_memmpk(
@@ -251,7 +262,7 @@ int secp256k1_boquila_verify_memmpk(
         uint8_t *proof,
         pk_t *mpks,
         pk_t * wpk,
-        int32_t N) {
+        int32_t N, int m) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(mpks != NULL);
@@ -284,7 +295,19 @@ int secp256k1_boquila_verify_memmpk(
         secp256k1_ge_set_gej(&cints[i].c, &tmpj);
         secp256k1_ge_save_boquila(cints[i].buf, &cints[i].c);
     }
-    return secp256k1_verify_zero_mcom_proof(ctx, rctx, proof, cints, N);
+
+    // create m
+//    int tmpN = N;
+//    int m = 0;
+//    for (int t = 0; t < rctx->m; t++) {
+//        tmpN = tmpN/rctx->n;
+//        m++;
+//        if (tmpN == 0) {
+//            break;
+//        }
+//    }
+
+    return secp256k1_verify_zero_mcom_proof(ctx, rctx, proof, cints, N, m);
 }
 
 
