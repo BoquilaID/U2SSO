@@ -10,3 +10,11 @@
 
 `npm install web3`
 
+For python 
+
+`pip install web3`
+
+`pip3 install py-solc-x`
+
+
+

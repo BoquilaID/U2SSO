@@ -9,6 +9,7 @@ contract Boquila {
     function addElement(string memory elem) public { //returns (uint256){
         // Add element to the blockchain
         // uint256 size = list.length;
+        // TODO not add the element if it is already in the list
         list.push(elem);
         pkToIndex[elem] = list.length - 1;
         // return size; //cannot return something here because it is not allowed by the interface
