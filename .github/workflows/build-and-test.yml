@@ -7,16 +7,39 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Install circom
+              with:
+                  submodules: "recursive"
+            - name: install requirements
+              uses: awalsh128/cache-apt-pkgs-action@v1
+              with:
+                  packages: build-essential cmake m4 nasm nlohmann-json3-dev libgmp-dev
+                  version: 1.0
+            - name: download rapidsnark
               run: |
-                  sudo wget -O /usr/bin/circom https://github.com/iden3/circom/releases/download/v2.1.9/circom-linux-amd64
-                  sudo chmod +x /usr/bin/circom
+                  cd crypto
+                  git clone https://github.com/vivianjeng/rapidsnark.git
+            - name: build gmp for Linux x86_64
+              run: |
+                  cd crypto/rapidsnark
+                  git submodule init
+                  git submodule update
+                  if [[ ! -d "depends/gmp/package" ]]; then ./build_gmp.sh host; fi
+            - name: Build prover Linux
+              run: |
+                  cd crypto/rapidsnark
+                  mkdir -p build_prover && cd build_prover
+                  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../package
+                  make -j4 && make install
+            # - name: Install circom
+            #   run: |
+            #       sudo wget -O /usr/bin/circom https://github.com/iden3/circom/releases/download/v2.1.9/circom-linux-amd64
+            #       sudo chmod +x /usr/bin/circom
             - name: Use Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: "20.x"
-            - name: Install snarkjs
-              run: npm install -g snarkjs
+            # - name: Install snarkjs
+            #   run: npm install -g snarkjs
             - name: Install dependencies
               run: |
                   cd crypto
@@ -24,7 +47,7 @@ jobs:
             - name: Build circuits
               run: |
                   cd crypto
-                  npm run build
+                  ./scripts/benchmark.sh
             - name: Run tests
               run: |
                   cd crypto
@@ -43,3 +66,7 @@ jobs:
               run: |
                   cd crypto-ddh
                   ./tests
+            - name: Run benchmark
+              run: |
+                  cd crypto-ddh
+                  ./benchmark.sh
