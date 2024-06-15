@@ -26,11 +26,6 @@ typedef struct cint_public_struct {
     uint8_t buf[33]; // could be uninitialized
 } cint_pt;
 
-typedef struct cint_secret_struct {
-    int64_t v;  // could be uninitialized
-    secp256k1_scalar val;  // could be uninitialized
-    secp256k1_scalar key; // could be uninitialized
-} cint_st;
 
 typedef struct zero_com_proof_struct {
     //secp256k1_ge A; // could be uninitialized
@@ -198,103 +193,13 @@ SECP256K1_API  void secp256k1_ringcip_context_clear(ringcip_context *rctx)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
 
 /**
- * create a confidential integer
- * @param ctx
- * @param rctx - ring cip context
- * @param c  - output
- * @param v - hidden integer
- * @param key - blind factor
- * @return 1- success, 0 - failure
- */
-int secp256k1_create_secret_cint(const secp256k1_context* ctx,
-                          ringcip_context *rctx,
-                          cint_st *c,
-                          int64_t v,
-                          uint8_t *key
- ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(5);
-
-/**
- * create a confidential integer
- * @param ctx
- * @param rctx - ring cip context
- * @param c  - output
- * @param csk  - input secrets
- * @return 1- success, 0 - failure
- */
-int secp256k1_create_cint(const secp256k1_context* ctx,
-                                 ringcip_context *rctx,
-                                 cint_pt *c,
-                                 cint_st *csk
-) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(5);
-
-
-/**
- * Get serialized commitment
- * @param ctx - context
- * @param buf - output bytes [33]
- * @param c - confidential integer
- * @return 1- successful, 0 - failure
- */
-int secp256k1_serialize_cint(
-        const secp256k1_context* ctx, uint8_t *buf, cint_pt *c)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
-
-/**
- * Get serialized commitment
- * @param ctx - context
- * @param c - confidential integer
- * @param buf - output bytes [33]
- * @return 1- successful, 0 - failure
- */
-int secp256k1_parse_cint(const secp256k1_context* ctx, cint_pt *c, uint8_t *buf)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
-
-/**
  * return the byte size of the proof
  * @param rctx
  * @return
  */
-int secp256k1_zero_mcom_get_size(const ringcip_context *rctx, int m);
+SECP256K1_API  int secp256k1_zero_mcom_get_size(const ringcip_context *rctx, int m);
 
-/**
- * create a proof according to
-``Short Accountable Ring Signatures Based on DDH'' by
- Jonathan Bootle, Andrea Cerulli, Pyrros Chaidos, Essam Ghadafi, Jens Groth & Christophe Petit
- * @param ctx - context object
- * @param rctx - ring cip context
- * @param proof - output (please allocate memory for the proof)
- * @param Cs -  commitment set
- * @param index - index of the zero value commitment
- * @param key - secret key of the zero value commitment
- * @param ring_size - number of Cs
- * @return 1- successful, 0 - failure
- */
-int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx,
-                                     const ringcip_context *rctx,
-                                     uint8_t *proof,
-                                     cint_pt *Cs,
-                                     int index,
-                                     secp256k1_scalar *key,
-                                     int ring_size, int m)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(6);
 
-/**
- * verify a proof according to
-``Short Accountable Ring Signatures Based on DDH'' by
- Jonathan Bootle, Andrea Cerulli, Pyrros Chaidos, Essam Ghadafi, Jens Groth & Christophe Petit
- * @param ctx - context object
- * @param rctx - ring cip context
- * @param proof - input
- * @param Cs commitment set
- * @param ring_size - number of Cs
- * @return 1- successful, 0 - failure
- */
-int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx,
-                                     const ringcip_context *rctx,
-                                     uint8_t *proof,
-                                     cint_pt *Cs,
-                                     int ring_size, int m)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
 # ifdef __cplusplus
 }
