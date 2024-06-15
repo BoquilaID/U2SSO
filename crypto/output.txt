@@ -1,0 +1,350 @@
+Witness calculation time: 2978 microseconds
+Proof calculation time: 69642 microseconds
+Verication time: 2758 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2539 microseconds
+Proof calculation time: 62121 microseconds
+Verication time: 2335 microseconds
+-rw-r--r--  1 zhengyawen  staff   704B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2346 microseconds
+Proof calculation time: 61178 microseconds
+Verication time: 2374 microseconds
+-rw-r--r--  1 zhengyawen  staff   703B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2365 microseconds
+Proof calculation time: 61696 microseconds
+Verication time: 2361 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2386 microseconds
+Proof calculation time: 61959 microseconds
+Verication time: 2389 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2291 microseconds
+Proof calculation time: 61765 microseconds
+Verication time: 2327 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2423 microseconds
+Proof calculation time: 62109 microseconds
+Verication time: 2393 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2269 microseconds
+Proof calculation time: 62258 microseconds
+Verication time: 2423 microseconds
+-rw-r--r--  1 zhengyawen  staff   704B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2308 microseconds
+Proof calculation time: 61203 microseconds
+Verication time: 2344 microseconds
+-rw-r--r--  1 zhengyawen  staff   704B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 2414 microseconds
+Proof calculation time: 61457 microseconds
+Verication time: 2353 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:39 proof_16.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:39 public_16.json
+Witness calculation time: 3253 microseconds
+Proof calculation time: 64078 microseconds
+Verication time: 2558 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2479 microseconds
+Proof calculation time: 62997 microseconds
+Verication time: 2492 microseconds
+-rw-r--r--  1 zhengyawen  staff   710B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2605 microseconds
+Proof calculation time: 63066 microseconds
+Verication time: 2322 microseconds
+-rw-r--r--  1 zhengyawen  staff   702B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2545 microseconds
+Proof calculation time: 62184 microseconds
+Verication time: 2380 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2366 microseconds
+Proof calculation time: 62101 microseconds
+Verication time: 2331 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2416 microseconds
+Proof calculation time: 62265 microseconds
+Verication time: 2355 microseconds
+-rw-r--r--  1 zhengyawen  staff   705B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2440 microseconds
+Proof calculation time: 62498 microseconds
+Verication time: 2384 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2439 microseconds
+Proof calculation time: 61938 microseconds
+Verication time: 2395 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2360 microseconds
+Proof calculation time: 63056 microseconds
+Verication time: 2450 microseconds
+-rw-r--r--  1 zhengyawen  staff   705B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 2520 microseconds
+Proof calculation time: 63227 microseconds
+Verication time: 2395 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:40 proof_32.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:40 public_32.json
+Witness calculation time: 3077 microseconds
+Proof calculation time: 73752 microseconds
+Verication time: 2507 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2535 microseconds
+Proof calculation time: 62227 microseconds
+Verication time: 2400 microseconds
+-rw-r--r--  1 zhengyawen  staff   710B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2426 microseconds
+Proof calculation time: 63367 microseconds
+Verication time: 2481 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2526 microseconds
+Proof calculation time: 62813 microseconds
+Verication time: 2400 microseconds
+-rw-r--r--  1 zhengyawen  staff   705B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2478 microseconds
+Proof calculation time: 62208 microseconds
+Verication time: 2360 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2481 microseconds
+Proof calculation time: 62212 microseconds
+Verication time: 2383 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2491 microseconds
+Proof calculation time: 62333 microseconds
+Verication time: 2379 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2458 microseconds
+Proof calculation time: 62243 microseconds
+Verication time: 2375 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2455 microseconds
+Proof calculation time: 62100 microseconds
+Verication time: 2378 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 2432 microseconds
+Proof calculation time: 61854 microseconds
+Verication time: 2348 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:41 proof_64.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:41 public_64.json
+Witness calculation time: 4454 microseconds
+Proof calculation time: 72244 microseconds
+Verication time: 2576 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2624 microseconds
+Proof calculation time: 62493 microseconds
+Verication time: 2357 microseconds
+-rw-r--r--  1 zhengyawen  staff   704B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2508 microseconds
+Proof calculation time: 62210 microseconds
+Verication time: 2322 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2521 microseconds
+Proof calculation time: 62139 microseconds
+Verication time: 2364 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2525 microseconds
+Proof calculation time: 62334 microseconds
+Verication time: 2365 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2545 microseconds
+Proof calculation time: 62256 microseconds
+Verication time: 2321 microseconds
+-rw-r--r--  1 zhengyawen  staff   710B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2579 microseconds
+Proof calculation time: 62022 microseconds
+Verication time: 2371 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2563 microseconds
+Proof calculation time: 61823 microseconds
+Verication time: 2320 microseconds
+-rw-r--r--  1 zhengyawen  staff   705B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2509 microseconds
+Proof calculation time: 62066 microseconds
+Verication time: 2369 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 2531 microseconds
+Proof calculation time: 61932 microseconds
+Verication time: 2386 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:42 proof_128.json
+-rw-r--r--  1 zhengyawen  staff   160B  6 15 10:42 public_128.json
+Witness calculation time: 3414 microseconds
+Proof calculation time: 73796 microseconds
+Verication time: 2519 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2627 microseconds
+Proof calculation time: 66716 microseconds
+Verication time: 2466 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2767 microseconds
+Proof calculation time: 68447 microseconds
+Verication time: 2356 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2668 microseconds
+Proof calculation time: 65545 microseconds
+Verication time: 2364 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2686 microseconds
+Proof calculation time: 66065 microseconds
+Verication time: 2360 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2710 microseconds
+Proof calculation time: 65375 microseconds
+Verication time: 2430 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2723 microseconds
+Proof calculation time: 65704 microseconds
+Verication time: 2370 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2687 microseconds
+Proof calculation time: 65587 microseconds
+Verication time: 2384 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2591 microseconds
+Proof calculation time: 65130 microseconds
+Verication time: 2452 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 2658 microseconds
+Proof calculation time: 66077 microseconds
+Verication time: 2392 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:43 proof_256.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:43 public_256.json
+Witness calculation time: 3697 microseconds
+Proof calculation time: 79058 microseconds
+Verication time: 2514 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2957 microseconds
+Proof calculation time: 69798 microseconds
+Verication time: 2395 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2765 microseconds
+Proof calculation time: 70004 microseconds
+Verication time: 2421 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2707 microseconds
+Proof calculation time: 69500 microseconds
+Verication time: 2374 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2677 microseconds
+Proof calculation time: 70571 microseconds
+Verication time: 2411 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2753 microseconds
+Proof calculation time: 70712 microseconds
+Verication time: 2392 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2802 microseconds
+Proof calculation time: 69721 microseconds
+Verication time: 2384 microseconds
+-rw-r--r--  1 zhengyawen  staff   707B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2724 microseconds
+Proof calculation time: 69787 microseconds
+Verication time: 2361 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2699 microseconds
+Proof calculation time: 70088 microseconds
+Verication time: 2357 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 2777 microseconds
+Proof calculation time: 69776 microseconds
+Verication time: 2377 microseconds
+-rw-r--r--  1 zhengyawen  staff   710B  6 15 10:44 proof_512.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_512.json
+Witness calculation time: 3389 microseconds
+Proof calculation time: 91483 microseconds
+Verication time: 2673 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 3181 microseconds
+Proof calculation time: 76942 microseconds
+Verication time: 2459 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 3291 microseconds
+Proof calculation time: 74529 microseconds
+Verication time: 2418 microseconds
+-rw-r--r--  1 zhengyawen  staff   704B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 2891 microseconds
+Proof calculation time: 73879 microseconds
+Verication time: 2412 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 2905 microseconds
+Proof calculation time: 74409 microseconds
+Verication time: 2405 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 2845 microseconds
+Proof calculation time: 73604 microseconds
+Verication time: 2470 microseconds
+-rw-r--r--  1 zhengyawen  staff   703B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 2878 microseconds
+Proof calculation time: 75289 microseconds
+Verication time: 2524 microseconds
+-rw-r--r--  1 zhengyawen  staff   706B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 3057 microseconds
+Proof calculation time: 74137 microseconds
+Verication time: 2404 microseconds
+-rw-r--r--  1 zhengyawen  staff   708B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 2898 microseconds
+Proof calculation time: 75558 microseconds
+Verication time: 2464 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
+Witness calculation time: 3689 microseconds
+Proof calculation time: 77692 microseconds
+Verication time: 2421 microseconds
+-rw-r--r--  1 zhengyawen  staff   709B  6 15 10:44 proof_1024.json
+-rw-r--r--  1 zhengyawen  staff   161B  6 15 10:44 public_1024.json
