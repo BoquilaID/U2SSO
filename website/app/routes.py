@@ -1,6 +1,9 @@
+# app/routes.py
 from flask import render_template, request, jsonify
-from app import app
+from app import app, db
 from app.user import register_user
+from app.models import Challenge
+import random
 
 @app.route('/')
 def home():
@@ -10,7 +13,7 @@ def home():
 def register():
     try:
         user_data = request.json
-        print(f"Received JSON data: {user_data}")  # Debugging statement
+        print(f"Received JSON data: {user_data}")
         user_data['website_public_key'] = user_data.get('publicKeyPem')
         user_data['child_public_key'] = "dummy_child_public_key"
         user_data['index_value'] = 1
@@ -23,6 +26,13 @@ def register():
 
 @app.route('/get_website_name', methods=['GET'])
 def get_website_name():
-    # Extract the website name from the Host header
     website_name = request.headers.get('Host', 'unknown')
     return jsonify({'website_name': website_name})
+
+@app.route('/generate_challenge', methods=['GET'])
+def generate_challenge():
+    challenge = random.randint(1, 10**9)
+    new_challenge = Challenge(challenge=challenge)
+    db.session.add(new_challenge)
+    db.session.commit()
+    return jsonify({'challenge': challenge})

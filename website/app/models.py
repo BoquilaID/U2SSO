@@ -1,4 +1,6 @@
+# app/models.py
 from app import db
+import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,3 +10,11 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.id}>'
+
+class Challenge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    challenge = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Challenge {self.id} - {self.challenge}>'
