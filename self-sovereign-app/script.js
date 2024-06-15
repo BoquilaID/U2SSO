@@ -1,4 +1,6 @@
 // script.js
+import { getDefaultAccaunt, addElement } from '../contracts/light_client.js';
+
 document.getElementById('registerButton')?.addEventListener('click', function() {
     window.location.href = 'second.html';
 });
@@ -7,9 +9,24 @@ document.getElementById('registerButton')?.addEventListener('click', function() 
 //     window.location.href = 'index.html';
 // });
 
+document.getElementById('ethButton')?.addEventListener('click', function() {
+    document.getElementById('contractResponse').style.display = 'flex';   
+});
+
+async function loadToEthContract() {
+    const defaultAccount = await getDefaultAccaunt();
+    const element = document.getElementById('dynamicText1').textContent;
+    await addElement(element, defaultAccount);
+    document.getElementById('contractResponse').textContent = "Element added to the contract";
+
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
     const loadingElement = document.getElementById('loading');
     const linesElement = document.getElementById('info-lines');
+    const ethButton = document.getElementById('ethButton');
+
 
 
     // TODO: substitute with KeyGen() from crypto library
@@ -45,6 +62,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     // Show the content
                     linesElement.style.display = 'flex';
+                    ethButton.style.display = 'flex';
+                    
                 
                 },3000);
 
