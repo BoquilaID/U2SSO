@@ -1,5 +1,5 @@
 const {Web3} = require('web3');
-const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
+const ABI = require('./Boquila.json'); // SET HERE ABI of the contract
      
 // SET UP THE WEB3 PROVIDER
 let web3 = new Web3('http://localhost:7545');

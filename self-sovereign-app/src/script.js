@@ -1,5 +1,5 @@
 // script.js
-import { getDefaultAccaunt, addElement } from '../contracts/light_client.js';
+import { getDefaultAccaunt, addElement } from './light_client.js';
 
 document.getElementById('registerButton')?.addEventListener('click', function() {
     window.location.href = 'second.html';
