@@ -6,6 +6,7 @@
 #define SECP256K_NOPENI_SECP256K1_RINGCIP_H
 
 # include "secp256k1.h"
+# include "secp256k1_generator.h"
 
 # ifdef __cplusplus
 extern "C" {

@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <secp256k1.h>
-#include <secp256k1_generator.h>
-#include <secp256k1_commitment.h>
 #include <secp256k1_ringcip.h>
 
 int main() {
