@@ -1,4 +1,3 @@
-# init_db.py
 import os
 from app import app, db
 from app.models import User
@@ -11,7 +10,7 @@ def init_db():
         os.remove(db_path)
         print("Existing database file removed.")
     
-    # Create new database tables
+    # Create new database tables    
     with app.app_context():
         db.create_all()
         print("Database tables created.")

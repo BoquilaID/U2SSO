@@ -1,2 +1,4 @@
 Flask
 Flask-SQLAlchemy
+flask-cors
+Flask-Migrate
