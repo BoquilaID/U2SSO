@@ -250,22 +250,6 @@ int secp256k1_parse_cint(const secp256k1_context* ctx, cint_pt *c, uint8_t *buf)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
 
 /**
- * Commitment of multiple generators
- * @param ctx - context
- * @param rctx - ring cip context
- * @param com - output
- * @param vals - values
- * @param key - random key
- * @return 1- successful, 0 - failure
- */
-int secp256k1_create_multival_com(const secp256k1_context* ctx,
-                                  const ringcip_context *rctx,
-                                  secp256k1_ge *com,
-                                  secp256k1_scalar *vals,
-                                  secp256k1_scalar *key)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
-
-/**
  * return the byte size of the proof
  * @param rctx
  * @return
