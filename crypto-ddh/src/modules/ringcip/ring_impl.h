@@ -8,7 +8,6 @@
 #include "include/secp256k1_ringcip.h"
 
 
-
 static void secp256k1_ge_save1(unsigned char *buf, secp256k1_ge* ge) {
     secp256k1_fe_normalize(&ge->x);
     secp256k1_fe_get_b32(&buf[1], &ge->x);

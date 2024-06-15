@@ -43,6 +43,10 @@ typedef struct pk_struct {
     uint8_t buf[33];
 } pk_t;
 
+typedef struct boquila_struct {
+    secp256k1_context* ctx;
+    ringcip_context rctx;
+} boquila_ctx;
 
 /**
  * Create the master secret public keys from the given master secret key

@@ -9,17 +9,25 @@
 #include <secp256k1.h>
 #include <secp256k1_ringcip.h>
 
-typedef struct boquila_struct {
-    secp256k1_context* ctx;
-    ringcip_context rctx;
-} boquila_ctx;
 
 boquila_ctx boquila_get_context(int L, int n, int m) {
     boquila_ctx ctx;
     uint8_t gen_seed[32];
-    RAND_bytes(gen_seed, 32);
+    memset(gen_seed, 0xff, 32);
     ctx.ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     ctx.rctx = secp256k1_ringcip_context_create(ctx.ctx, L, n, m, gen_seed, NULL);
+}
+
+pk_t boquila_gen_mpk(boquila_ctx ctx, uint8_t *msk) {
+    pk_t mpk;
+    secp256k1_boquila_gen_mpk(ctx.ctx, &ctx.rctx, &mpk, msk);
+    return mpk;
+}
+
+pk_t boquila_derive_webpk(boquila_ctx ctx, uint8_t *msk, uint8_t *name, int name_len) {
+    pk_t wpk;
+    secp256k1_boquila_derive_webpk(ctx.ctx, &ctx.rctx, &wpk, msk, name, name_len);
+    return wpk;
 }
 
 int main() {
