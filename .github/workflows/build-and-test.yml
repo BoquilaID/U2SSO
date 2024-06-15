@@ -66,3 +66,7 @@ jobs:
               run: |
                   cd crypto-ddh
                   ./tests
+            - name: Run benchmark
+              run: |
+                  cd crypto-ddh
+                  ./benchmark.sh
