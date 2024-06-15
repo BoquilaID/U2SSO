@@ -278,7 +278,7 @@ int main (int argc, char *argv[]) {
    writeBinWitness(ctx,wtnsfile);
   
    auto t_end = std::chrono::high_resolution_clock::now();
-   std::cout << std::chrono::duration<double, std::milli>(t_end-t_start).count()<<std::endl;
+   std::cout << std::chrono::duration<double, std::micro>(t_end-t_start).count()<<std::endl;
 
   }  
 }
