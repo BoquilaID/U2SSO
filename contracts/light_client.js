@@ -1,100 +1,12 @@
 const {Web3} = require('web3');
 
-const abi = [
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "list",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "name": "pkToIndex",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "elem",
-          "type": "string"
-        }
-      ],
-      "name": "addElement",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "elem",
-          "type": "string"
-        }
-      ],
-      "name": "getIndexOfElement",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "getList",
-      "outputs": [
-        {
-          "internalType": "string[]",
-          "name": "",
-          "type": "string[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    }
-  ];
 const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
      
 // SET UP THE WEB3 PROVIDER
 let web3 = new Web3('http://localhost:7545');
 
-let contract_address = '0x8B0A153d65E1744EA08671a58E0D1d75F10965AA'; // PASTE THE CONTRACT ADDRESS HERE
+let contract_address = '0x961B50CF253B974BEA3110BbeE4A81414D8c3ae5'; // PASTE THE CONTRACT ADDRESS HERE
+
 let contract = new web3.eth.Contract(ABI.abi, contract_address);
 
 console.log(contract.methods);
@@ -102,7 +14,7 @@ console.log(contract.methods);
 async function getDefaultAccaunt() {    
         // Get the accounts to use one as default to sign transactions 
         const accounts = await web3.eth.getAccounts();
-        return accounts[0];
+        return accounts[1];
 }
 
 async function addElement(element, defaultAccount) {

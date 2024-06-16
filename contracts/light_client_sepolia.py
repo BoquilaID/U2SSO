@@ -21,7 +21,7 @@ else:
 
 # Initialize the address calling the functions/signing transactions
 caller = "0xb16070BEB2629363A8BDFA227940124129276669"
-private_key = "36e8cffd19966fac96e718f030ce8bb49dd0105516fc2177844913de6814470b"  # To sign the transaction
+private_key = "<YOUR_PRIVATE_KEY>"  # To sign the transaction
 
 # Initialize address nonce
 nonce = web3.eth.get_transaction_count(caller)

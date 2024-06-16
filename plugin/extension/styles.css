@@ -47,7 +47,7 @@ button:hover {
 }
 
 #text {
-    margin-bottom: 20px;
+    margin-bottom: 20px ;
     font-size: 24px;
     color: #333;
 }
@@ -99,6 +99,7 @@ button:hover {
 
 .label {
     font-weight: bold;
+    margin: 2px 2px 2px 2px;
 }
 
 /* Loading spinner styles */

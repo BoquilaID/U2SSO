@@ -18,11 +18,18 @@ function generateRsaKeyPair() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const generateKeysButton = document.getElementById('generate-keys');
-  const generateChildKeysButton = document.getElementById('generate-child-keys');
-  const saveEthKeysButton = document.getElementById('save-eth-keys');
   const keysOutput = document.getElementById('keys-output');
-  const loader = document.getElementById('loader');
+
+  const truffleButton = document.getElementById('post-to-truffle');
+  const truffleOutput = document.getElementById('truffle-output');
+
+  const proofButton = document.getElementById('gen-proof');
+  const proofOutput = document.getElementById('proof-output');
+
+  const saveEthKeysButton = document.getElementById('save-eth-keys');
   const ethKeysContainer = document.getElementById('eth-keys-container');
+
+  const loader = document.getElementById('loader');
 
   const showLoader = () => {
     loader.style.display = 'block';
@@ -32,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loader.style.display = 'none';
   };
 
+
   // Check if Ethereum keys are already set
   chrome.storage.local.get(['eth_pubkey', 'eth_prikey'], (result) => {
     if (result.eth_pubkey && result.eth_prikey) {
@@ -39,6 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
       keysOutput.innerText = 'Ethereum keys are already set.';
     }
   });
+
+    // Check if Ethereum keys are already set
+    chrome.storage.local.get(['Master_keypair'], (result) => {
+      if (result.Master_keypair) {
+        ethKeysContainer.style.display = 'none';
+        keysOutput.innerText = 'Master keys are present.';
+      }
+    });
+
+    let mpk;
 
   generateKeysButton.addEventListener('click', async () => {
     showLoader();
@@ -56,10 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        keysOutput.innerText = 'RSA keys generated and stored successfully';
+        keysOutput.innerText = 'Master keys generated and stored successfully';
         console.log('Generated keys:', keys);
 
-        pk = String(keys.publicKeyPem);
+        mpk = String(keys.publicKeyPem);
+
+        //show the menu for ethereum 
+        // ethKeysContainer.style.display = 'flex';
 
       });
     } catch (error) {
@@ -69,13 +90,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //loading to the contract
-    let account = await getDefaultAccaunt();
-    // const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-    // const account = await web3.eth.getAccounts()[0];
-        
-    let tx = await addElement(pk, account);
+    // const web3 = setProvider('http://localhost:7545');
+    // // const web3 = setProvider('https://ethereum-sepolia-rpc.publicnode.com');
+    // let account = await getDefaultAccaunt();
+    // // let privKey = '0x530457b80da5a3d00859c0a54b55a80b5314540c60b8c848674cb7e29069ba30'; 
+    // // let account = await getAccountEth(privKey, web3);
+    // let contract = getContract(web3);
+    // let tx = await addElement(pk, account, contract);
 
   });
+
+  truffleButton.addEventListener('click', async () => {
+ 
+    //loading to the contract
+    const web3 = setProvider('http://localhost:7545');
+    // const web3 = setProvider('https://ethereum-sepolia-rpc.publicnode.com');
+    let account = await getDefaultAccaunt();
+    // let privKey = '0x530457b80da5a3d00859c0a54b55a80b5314540c60b8c848674cb7e29069ba30'; 
+    // let account = await getAccountEth(privKey, web3);
+    let contract = getContract(web3);
+    let tx = await addElement(mpk, account, contract);
+
+    // truffleOutput.innerText = 'Key sent on the blockchain';
+    truffleOutput.innerText = mpk;
+    // Ensure that the popup size adjusts based on the content's height and width
+    // document.documentElement.style.height = 'auto';
+    // document.documentElement.style.width = 'auto';
+    // document.body.style.height = 'auto';
+    // document.body.style.width = 'auto';
+
+    // Set the body height and width to the actual content's height and width
+    // document.body.style.height = document.documentElement.scrollHeight + 'px';
+    document.body.style.width = '500px';
+
+
+  });
+
+  proofButton.addEventListener('click', () => {
+
+    // Here the code to generate the proof 
+    proofOutput.innerText = 'Proof generated';
+  });
+
 
   saveEthKeysButton.addEventListener('click', () => {
     const ethPubKey = document.getElementById('eth-pubkey').value;
