@@ -1,19 +1,5 @@
 const {Web3} = require('web3');
 
-async function loadJSON() {
-    try {
-        const response = await fetch('data.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        const data = await response.json();
-        console.log(data);
-        return data;
-    } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-    }
-}
-
 const abi = [
     {
       "inputs": [
@@ -103,15 +89,13 @@ const abi = [
       "constant": true
     }
   ];
-
-// const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
-// const ABI = await loadJSON('./truffle/build/contracts/Boquila.json');
+const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
      
 // SET UP THE WEB3 PROVIDER
 let web3 = new Web3('http://localhost:7545');
 
 let contract_address = '0x8B0A153d65E1744EA08671a58E0D1d75F10965AA'; // PASTE THE CONTRACT ADDRESS HERE
-let contract = new web3.eth.Contract(abi, contract_address);
+let contract = new web3.eth.Contract(ABI.abi, contract_address);
 
 console.log(contract.methods);
 

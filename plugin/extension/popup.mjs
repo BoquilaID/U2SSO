@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   generateKeysButton.addEventListener('click', async () => {
     showLoader();
     keysOutput.innerText = '';
+    let pk;
     try {
       const keys = await generateRsaKeyPair();
       hideLoader();
@@ -57,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         keysOutput.innerText = 'RSA keys generated and stored successfully';
         console.log('Generated keys:', keys);
+
+        pk = String(keys.publicKeyPem);
+
       });
     } catch (error) {
       hideLoader();
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
     // const account = await web3.eth.getAccounts()[0];
         
-    let tx = await addElement("ciao" , account);
+    let tx = await addElement(pk, account);
 
   });
 
