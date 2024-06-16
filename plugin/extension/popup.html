@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Extension</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- <h1>Crypto Extension</h1> -->
+  <button class="button", id="generate-keys">Generate Master Key Pair</button>
+  <button class="button", id="generate-child-keys">Generate Child Key</button>
+  <div id="loader"></div>
+  <div id="keys-output"></div>
+  
+  <div id="eth-keys-container">
+    <h2>Enter Ethereum Keys</h2>
+    <label for="eth-pubkey">Ethereum Public Key:</label>
+    <input type="text" id="eth-pubkey" name="eth-pubkey"><br><br>
+    <label for="eth-prikey">Ethereum Private Key:</label>
+    <input type="text" id="eth-prikey" name="eth-prikey"><br><br>
+    <button id="save-eth-keys">Save Ethereum Keys</button>
+  </div>
+  
+  <script src="./libs/forge.min.js"></script>
+  <script src="./libs/crypto-js.min.js"></script>
+  <script src="web3.min.js"></script>
+  <script src="light_client.mjs"></script>
+  <script type="module" src="./popup.mjs"></script>
+</body>
+</html>

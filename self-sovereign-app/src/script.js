@@ -1,5 +1,5 @@
 // script.js
-import { getDefaultAccaunt, addElement } from './light_client.js';
+// import { getDefaultAccaunt, addElement } from './light_client.js';
 
 document.getElementById('registerButton')?.addEventListener('click', function() {
     window.location.href = 'second.html';
@@ -13,13 +13,13 @@ document.getElementById('ethButton')?.addEventListener('click', function() {
     document.getElementById('contractResponse').style.display = 'flex';   
 });
 
-async function loadToEthContract() {
-    const defaultAccount = await getDefaultAccaunt();
-    const element = document.getElementById('dynamicText1').textContent;
-    await addElement(element, defaultAccount);
-    document.getElementById('contractResponse').textContent = "Element added to the contract";
+// async function loadToEthContract() {
+//     const defaultAccount = await getDefaultAccaunt();
+//     const element = document.getElementById('dynamicText1').textContent;
+//     await addElement(element, defaultAccount);
+//     document.getElementById('contractResponse').textContent = "Element added to the contract";
 
-}
+// }
 
 
 window.addEventListener('DOMContentLoaded', () => {

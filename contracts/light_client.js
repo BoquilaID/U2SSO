@@ -1,21 +1,127 @@
 const {Web3} = require('web3');
-const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
+
+async function loadJSON() {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+    }
+}
+
+const abi = [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "list",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "pkToIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "elem",
+          "type": "string"
+        }
+      ],
+      "name": "addElement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "elem",
+          "type": "string"
+        }
+      ],
+      "name": "getIndexOfElement",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "getList",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    }
+  ];
+
+// const ABI = require('./truffle/build/contracts/Boquila.json'); // SET HERE ABI of the contract
+// const ABI = await loadJSON('./truffle/build/contracts/Boquila.json');
      
 // SET UP THE WEB3 PROVIDER
 let web3 = new Web3('http://localhost:7545');
 
-let contract_address = '0x1b495dc1341F9DEDE14bBDaD2d276e070fE496c3'; // PASTE THE CONTRACT ADDRESS HERE
-let contract = new web3.eth.Contract(ABI.abi, contract_address);
+let contract_address = '0x8B0A153d65E1744EA08671a58E0D1d75F10965AA'; // PASTE THE CONTRACT ADDRESS HERE
+let contract = new web3.eth.Contract(abi, contract_address);
 
 console.log(contract.methods);
 
-export async function getDefaultAccaunt() {    
+async function getDefaultAccaunt() {    
         // Get the accounts to use one as default to sign transactions 
         const accounts = await web3.eth.getAccounts();
         return accounts[0];
 }
 
-export async function addElement(element, defaultAccount) {
+async function addElement(element, defaultAccount) {
     const result = await contract.methods.addElement(element).send({from: defaultAccount, gas: 3000000});
     console.log("Transaction Hash: " + result.transactionHash)
 }
