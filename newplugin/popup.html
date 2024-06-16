@@ -4,34 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crypto Extension</title>
-  <style>
-    #loader {
-      border: 16px solid #f3f3f3;
-      border-top: 16px solid #3498db;
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 2s linear infinite;
-      display: none;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Crypto Extension</h1>
-  <button id="generate-keys">Generate Master Key Pair</button>
-  <button id="generate-proof">Generate Proof</button>
-  <div id="loader"></div>
+  <!-- <h1>Crypto Extension</h1> -->
+  <button class="button", id="generate-keys">Generate Master Key Pair</button>
   <div id="keys-output"></div>
+  <button class="button", id="post-to-truffle">Post to Blockchain</button>
+  <div class="label", id="truffle-output"></div>
+  <button class="button", id="generate-proof">Generate Proof</button>
+  <div id="proof-output", style="display: none;">
+  <p> <span class="label">Proof: </span><span id="dynamicProof"></span></p>
+  </div>
+  <div id="loader"></div>
   
   <script src="./libs/forge.min.js"></script>
   <script src="./libs/crypto-js.min.js"></script>
   <script src="./libs/web3.min.js"></script>
+  <script src="light_client.mjs"></script>
   <script type="module" src="./popup.mjs"></script>
 </body>
 </html>

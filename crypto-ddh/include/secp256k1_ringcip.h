@@ -195,7 +195,7 @@ SECP256K1_ARG_NONNULL(1);
  * @param rctx - ring cip context
  */
 SECP256K1_API  void secp256k1_ringcip_context_clear(ringcip_context *rctx)
-SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2);
+SECP256K1_ARG_NONNULL(1);
 
 /**
  * return the byte size of the proof

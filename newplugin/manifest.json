@@ -15,8 +15,7 @@
   "permissions": [
     "storage",
     "tabs",
-    "activeTab",
-    "nativeMessaging"
+    "activeTab"
   ],
   "host_permissions": [
     "http://localhost/*",
@@ -25,6 +24,9 @@
     "https://127.0.0.1/*"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "logo_min.png"
+  }
   }
 }
