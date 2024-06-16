@@ -7,7 +7,7 @@ Build the crupto-ddh library first, documentation in the README.md file of the l
 
 golang build 1.20>
 
-$ go build -o simulation main.go
+$ go build -o simulator main.go
 
 $ go build -o proof_gen proof_gen.go
 
