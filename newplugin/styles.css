@@ -1,0 +1,126 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    padding: 10px;
+    width: 200px;
+    /* height: 100vh; */
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #daf9ff;
+    font-family: Helvetica, Arial, sans-serif; /* Use Helvetica font */
+}
+
+#content {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+.container {
+    text-align: center;
+}
+
+.logo {
+    transform: scale(0.5); /* Scale the image to 50% of its original size */
+    margin-bottom: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 2px;
+    font-size: 16px;
+    background-color: #264E5A;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1b393f;
+}
+
+#text {
+    margin-bottom: 20px ;
+    font-size: 24px;
+    color: #333;
+}
+
+/* styles.css */
+.body2 {
+    margin: 0;
+    background-color: #ffffff;
+    font-family: "Helvetica Neue", sans-serif; /* Use Helvetica font */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-bar {
+    width: 100%;
+    height: 50px;
+    background-color: #daf9ff;
+    color: white;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.logo2 {
+    height: 80%; /* Adjust the height of the logo based on the bar */
+    
+    transition: transform 0.5s ease;
+}
+
+.content {
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.info-lines {
+    margin: 20px;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-weight: bold;
+    margin: 2px 2px 2px 2px;
+    display: flex;
+}
+
+/* Loading spinner styles */
+.loading {
+    border: 10px solid #daf9ff; /* Light grey */
+    border-top: 10px solid #264E5A; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Add some margin below the top bar */
+    display: flex;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
