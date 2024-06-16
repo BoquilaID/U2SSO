@@ -1,4 +1,4 @@
-This plugin is used to register the user in the Boquila system. And geenrate the proof of the user's identity. This proof can be verfiedi by the server with publicly available data from the smart contract. It uses ring signature at the core.
+This plugin is used to register the user in the Boquila system. And geenrate the proof of the user's identity. This proof can be verified by the server with publicly available data from the smart contract. It uses ring signature at the core.
 
 ## Build steps
 
