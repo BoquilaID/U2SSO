@@ -1,7 +1,2 @@
 .DS_Store
 */.DS_Store
-*/*.o
-*/*.lo
-*/*.la
-*/*.al
-crypto-ddh/src/*.libs

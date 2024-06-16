@@ -1,4 +1,6 @@
-This plugin is used to register the user in the Boquila system. And geenrate the proof of the user's identity. This proof can be verified by the server with publicly available data from the smart contract. It uses ring signature at the core.
+# Extension for Chrome
+
+This plugin is used to register the user in the Boquila system. Secondly, it generates a cryptographic proof of the user's identity. This proof can be verified by the server with publicly available data from the smart contract. The proof is a membership proof and it uses ring-signature at the core.
 
 ## Build steps
 
