@@ -59,7 +59,7 @@ int main() {
         }
     }
     int j = 0;
-    if (secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len) != 0) {
+    if (secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len) == 0) {
         printf("wpk creation failed");
     }
 
