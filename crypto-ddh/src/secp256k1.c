@@ -786,7 +786,7 @@ int secp256k1_ec_privkey_tweak_neg(const secp256k1_context* ctx, unsigned char *
 #endif
 
 #include "modules/ringcip/main_impl.h"
-#include "modules/ringcip/ring_impl.h"
+//#include "modules/ringcip/ring_impl.h"
 
 
 

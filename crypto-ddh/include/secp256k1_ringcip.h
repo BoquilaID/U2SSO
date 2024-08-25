@@ -94,14 +94,13 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
  * @param count -  child key count (4 bytes)
  * @return child secret key
  */
-SECP256K1_API int secp256k1_boquila_derive_csk(
+SECP256K1_API int secp256k1_boquila_derive_ssk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
         uint8_t* csk,
         const uint8_t* msk,
         const uint8_t* name,
-        int name_len,
-        uint8_t* count)
+        int name_len)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
 
@@ -116,7 +115,7 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
  * @param count -  child key count
  * @return child public key
  */
-SECP256K1_API int secp256k1_boquila_derive_cpk(
+SECP256K1_API int secp256k1_boquila_derive_spk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
         pk_t* cpk,
@@ -130,6 +129,7 @@ SECP256K1_API int secp256k1_boquila_prove_memmpk(
         uint8_t *proof,
         pk_t *mpks,
         const uint8_t* msk,
+        const uint8_t* W,
         const uint8_t* name,
         int name_len,
         pk_t * wpk,
@@ -143,6 +143,9 @@ SECP256K1_API int secp256k1_boquila_verify_memmpk(
         const ringcip_context* rctx,
         uint8_t *proof,
         pk_t *mpks,
+        const uint8_t* W,
+        const uint8_t* name,
+        int name_len,
         pk_t * wpk,
         int32_t N, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
@@ -170,8 +173,6 @@ SECP256K1_API int secp256k1_boquila_verify_newcpk(
         pk_t * cpk,
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
-
-
 
 
 /**
