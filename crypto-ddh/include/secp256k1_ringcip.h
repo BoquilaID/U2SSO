@@ -23,6 +23,20 @@ typedef struct ringcip_context_struct {
     secp256k1_generator genmu;
 } ringcip_context;
 
+typedef struct ringcip_DBPoE_context_struct {
+    int L; // range bit
+    int n; // N = n^m when N is the ring size and n is the base
+    int m;
+    int N;
+    secp256k1_generator *multigen;
+    secp256k1_generator *geng;
+    secp256k1_generator genh;
+    secp256k1_generator genmu;
+    uint8_t *topics; //32 names
+    int topic_size;
+} ringcip_DBPoE_context;
+
+
 typedef struct cint_public_struct {
     uint8_t buf[33]; // could be uninitialized
 } cint_pt;
@@ -48,6 +62,14 @@ typedef struct boquila_struct {
     ringcip_context rctx;
 } boquila_ctx;
 
+typedef struct boquila_DBPoE_struct {
+    secp256k1_context* ctx;
+    ringcip_DBPoE_context rctx;
+    uint8_t *topics; //32 names
+    int topic_size;
+} boquila_DBPoE_ctx;
+
+
 /**
  * Create the master secret public keys from the given master secret key
  * @param ctx - main context
@@ -59,6 +81,22 @@ typedef struct boquila_struct {
 SECP256K1_API int secp256k1_boquila_gen_mpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
+        pk_t *mpk,
+        const uint8_t *msk)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+/**
+ * Create the master secret public keys from the given master secret key
+ * @param ctx - main context
+ * @param rctx -  ring context
+ * @param mpk -  mpk (33 bytes)
+ * @param msk -  master secret key of 64 bytes
+ * @return 1 (success) or 0 (failure)
+ */
+SECP256K1_API int secp256k1_boquila_gen_DBPoE_mpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
         pk_t *mpk,
         const uint8_t *msk)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
@@ -96,7 +134,6 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
  */
 SECP256K1_API int secp256k1_boquila_derive_ssk(
         const secp256k1_context* ctx,
-        const ringcip_context* rctx,
         uint8_t* csk,
         const uint8_t* msk,
         const uint8_t* name,
@@ -122,6 +159,14 @@ SECP256K1_API int secp256k1_boquila_derive_spk(
         const uint8_t* csk)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
+SECP256K1_API int secp256k1_boquila_derive_DBPoE_spk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        pk_t* cpk,
+        const uint8_t* csk)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
 
 SECP256K1_API int secp256k1_boquila_prove_memmpk(
         const secp256k1_context* ctx,
@@ -141,6 +186,34 @@ SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP2
 SECP256K1_API int secp256k1_boquila_verify_memmpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* W,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        int32_t N, int m)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
+
+
+SECP256K1_API int secp256k1_boquila_prove_DBPoE_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* msk,
+        const uint8_t* W,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        int32_t j,
+        int32_t N, int m)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
+
+SECP256K1_API int secp256k1_boquila_verify_DBPoE_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
         uint8_t *proof,
         pk_t *mpks,
         const uint8_t* W,
@@ -174,6 +247,28 @@ SECP256K1_API int secp256k1_boquila_verify_newcpk(
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
+SECP256K1_API int secp256k1_boquila_prove_DBPoE_newcpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        uint8_t *proof,
+        const uint8_t* msk,
+        const uint8_t* r,
+        const uint8_t* name,
+        int name_len,
+        pk_t * wpk,
+        pk_t * cpk,
+        uint8_t *chal)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
+
+
+SECP256K1_API int secp256k1_boquila_verify_DBPoE_newcpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        uint8_t *proof,
+        pk_t * wpk,
+        pk_t * cpk,
+        uint8_t *chal)
+SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
 /**
  * Create the context object

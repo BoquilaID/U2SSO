@@ -328,10 +328,11 @@ int main(int argc, char **argv) {
         CHECK(secp256k1_context_randomize(ctx, secp256k1_rand_bits(1) ? run32 : NULL));
     }
 
-    test_ringcip();
-    test_boquila();
-    test_boquila_bench();
-    test_boquila_3_bench();
+    //test_ringcip();
+    //test_boquila();
+    //test_boquila_bench();
+    //test_boquila_3_bench();
+    test_boquila_DBPoE_bench();
 
     printf("passed ringcip tests!\n");
 

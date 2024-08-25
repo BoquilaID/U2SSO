@@ -17,6 +17,15 @@ boquila_ctx boquila_get_context(int L, int n, int m) {
     return ctx;
 }
 
+boquila_DBPoE_ctx boquila_get_DBPoE_context(int L, int n, int m, uint8_t *topics, int topic_size) {
+    boquila_DBPoE_ctx ctx;
+    uint8_t gen_seed[32];
+    memset(gen_seed, 0xff, 32);
+    ctx.ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+    ctx.rctx = secp256k1_ringcip_DBPoE_context_create(ctx.ctx, L, n, m, gen_seed, topics, topic_size);
+    return ctx;
+}
+
 int secp256k1_boquila_gen_mpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
@@ -51,16 +60,75 @@ int secp256k1_boquila_gen_mpk(
     return 1;
 }
 
+int secp256k1_boquila_gen_DBPoE_mpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        pk_t *mpk,
+        const uint8_t *msk) {
+    ARG_CHECK(ctx != NULL);
+    ARG_CHECK(rctx != NULL);
+    ARG_CHECK(mpk != NULL);
+    ARG_CHECK(msk != NULL);
+    int j;
+
+    int overflow;
+    secp256k1_ge tmp;
+    secp256k1_gej tmpj;
+    uint8_t buf[32];
+
+    secp256k1_ge* geng = (secp256k1_ge*) malloc((rctx->topic_size + 1) *sizeof(secp256k1_ge));
+    for (int j = 0; j < rctx->topic_size + 1; j++) {
+        secp256k1_generator_load(&geng[j], &rctx->geng[j]);
+    }
+
+    secp256k1_scalar vals[rctx->topic_size + 1];
+    secp256k1_scalar_set_b32(&vals[0], msk, &overflow);
+    if (overflow) {
+        return 0;
+    }
+    secp256k1_sha256 sha;
+
+    // val[j] = \mathsf{Hash}(msk, name)}
+    uint8_t count[4];
+    memset(count, 0xa, 4); // prefix for nullifiers
+    for (int j = 1; j < rctx->topic_size + 1; j++) {
+        secp256k1_sha256_initialize(&sha);
+        secp256k1_sha256_write(&sha, msk, 32);
+        secp256k1_sha256_write(&sha, rctx->topics, j*32);
+        secp256k1_sha256_write(&sha, count, 4);
+        secp256k1_sha256_finalize(&sha, buf);
+        secp256k1_scalar_set_b32(&vals[j], buf, &overflow);
+    }
+
+    /* g, mu */
+    secp256k1_ecmult_const(&tmpj, &geng[0], &vals[0], 256);
+    secp256k1_ge_set_gej(&tmp, &tmpj);
+    for (j = 1; j < rctx->topic_size + 1; j++) {
+        secp256k1_ecmult_const(&tmpj, &geng[j], &vals[j], 256); // todo
+        secp256k1_gej_add_ge(&tmpj, &tmpj, &tmp);
+        secp256k1_ge_set_gej(&tmp, &tmpj);
+    }
+
+    free(geng);
+
+    // serialize
+    secp256k1_ge_save_boquila(mpk->buf, &tmp);
+
+    for (int j = 1; j < rctx->topic_size + 1; j++) {
+        secp256k1_scalar_clear(&vals[j]);
+    }
+
+    return 1;
+}
+
 
 int secp256k1_boquila_derive_ssk(
         const secp256k1_context* ctx,
-        const ringcip_context* rctx,
         uint8_t* csk,
         const uint8_t* msk,
         const uint8_t* name,
         int name_len) {
     ARG_CHECK(ctx != NULL);
-    ARG_CHECK(rctx != NULL);
     ARG_CHECK(csk != NULL);
     ARG_CHECK(msk != NULL);
     ARG_CHECK(name != NULL);
@@ -99,6 +167,39 @@ int secp256k1_boquila_derive_spk(
 
     /* g, mu */
     secp256k1_generator_load(&tmpG, &rctx->geng);
+
+    secp256k1_scalar_set_b32(&scalarb, csk, &overflow);
+    if (overflow) {
+        return 0;
+    }
+    secp256k1_ecmult_const(&tmpj, &tmpG, &scalarb, 256);
+    secp256k1_ge_set_gej(&tmp, &tmpj);
+
+    // serialize
+    secp256k1_ge_save_boquila(cpk->buf, &tmp);
+
+    return 1;
+}
+
+
+int secp256k1_boquila_derive_DBPoE_spk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        pk_t* cpk,
+        const uint8_t* csk) {
+    ARG_CHECK(ctx != NULL);
+    ARG_CHECK(rctx != NULL);
+    ARG_CHECK(cpk != NULL);
+    ARG_CHECK(csk != NULL);
+
+    int overflow;
+    secp256k1_ge tmpG;
+    secp256k1_ge tmp;
+    secp256k1_gej tmpj;
+    secp256k1_scalar scalarb;
+
+    /* g, mu */
+    secp256k1_generator_load(&tmpG, &rctx->geng[0]);
 
     secp256k1_scalar_set_b32(&scalarb, csk, &overflow);
     if (overflow) {
@@ -251,7 +352,6 @@ int secp256k1_boquila_prove_memmpk(
     int res = secp256k1_create_zero_mcom_proof(ctx, rctx, proof, cints, j, &scalara, N, m, chalBuf);
     secp256k1_scalar_clear(&scalara);
     return res;
-
 }
 
 int secp256k1_boquila_verify_memmpk(
@@ -322,6 +422,129 @@ int secp256k1_boquila_verify_memmpk(
     }
 
     return secp256k1_verify_zero_mcom_proof(ctx, rctx, proof, cints, N, m, chalBuf);
+}
+
+
+int secp256k1_boquila_prove_DBPoE_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* msk,
+        const uint8_t* W,
+        const uint8_t* name,
+        int name_len,
+        pk_t * spk,
+        int32_t j,
+        int32_t N, int m) {
+    ARG_CHECK(ctx != NULL);
+    ARG_CHECK(rctx != NULL);
+    ARG_CHECK(mpks != NULL);
+    ARG_CHECK(spk != NULL);
+
+    cint_pt cints[N];
+
+    secp256k1_ge tmpG;
+    secp256k1_ge tmpH;
+    secp256k1_ge tmp;
+    secp256k1_ge tmpg;
+    secp256k1_ge tmpwpk;
+    secp256k1_gej tmpwpkj;
+    secp256k1_gej tmpj;
+    secp256k1_sha256 sha;
+    secp256k1_scalar tmpsc;
+    uint8_t chalBuf[32];
+    uint8_t buf[32];
+    int overflow;
+
+    secp256k1_ge* geng = (secp256k1_ge*) malloc((rctx->topic_size + 1) *sizeof(secp256k1_ge));
+    for (int j = 0; j < rctx->topic_size + 1; j++) {
+        secp256k1_generator_load(&geng[j], &rctx->geng[j]);
+    }
+
+    // challenge
+    secp256k1_sha256_initialize(&sha);
+    secp256k1_sha256_write(&sha, spk->buf, 33);
+    secp256k1_sha256_write(&sha, W, 32);
+    secp256k1_sha256_write(&sha, name, name_len);
+    secp256k1_sha256_finalize(&sha, chalBuf);
+
+    // values
+    secp256k1_scalar* vals = (secp256k1_scalar*) malloc((rctx->topic_size + 1)*sizeof(secp256k1_scalar));
+    secp256k1_scalar_set_b32(&vals[0], msk, &overflow);
+    if (overflow) {
+        return 0;
+    }
+
+    // val[j] = \mathsf{Hash}(msk, name)}
+    uint8_t count[4];
+    memset(count, 0xa, 4); // prefix for nullifiers
+    for (int j = 1; j < rctx->topic_size + 1; j++) {
+        secp256k1_sha256_initialize(&sha);
+        secp256k1_sha256_write(&sha, msk, 32);
+        secp256k1_sha256_write(&sha, rctx->topics, j*32);
+        secp256k1_sha256_write(&sha, count, 4);
+        secp256k1_sha256_finalize(&sha, buf);
+        secp256k1_scalar_set_b32(&vals[j], buf, &overflow);
+    }
+
+    for (int i = 0; i < N; i++) {
+        memcpy(cints[i].buf, mpks[i].buf, 33);
+    }
+
+    int res = secp256k1_create_zero_mcom_DBPoE_proof(ctx, rctx, proof, cints, j, vals, N, m, chalBuf);
+    for (int j = 1; j < rctx->topic_size + 1; j++) {
+        secp256k1_scalar_clear(&vals[j]);
+    }
+    free(vals);
+    free(geng);
+    return res;
+}
+
+
+int secp256k1_boquila_verify_DBPoE_memmpk(
+        const secp256k1_context* ctx,
+        const ringcip_DBPoE_context* rctx,
+        uint8_t *proof,
+        pk_t *mpks,
+        const uint8_t* W,
+        const uint8_t* name,
+        int name_len,
+        pk_t * spk,
+        int32_t N, int m) {
+    ARG_CHECK(ctx != NULL);
+    ARG_CHECK(rctx != NULL);
+    ARG_CHECK(mpks != NULL);
+    ARG_CHECK(spk != NULL);
+
+    secp256k1_ge tmpG;
+    secp256k1_ge tmpH;
+    secp256k1_ge tmp;
+    secp256k1_ge tmpg;
+    secp256k1_ge tmpwpk;
+    secp256k1_gej tmpwpkj;
+    secp256k1_gej tmpj;
+    secp256k1_scalar scalara;
+    secp256k1_scalar scalarb;
+    secp256k1_sha256 sha;
+    secp256k1_scalar tmpsc;
+    uint8_t chalBuf[32];
+    int overflow;
+
+    cint_pt cints[N];
+
+    // challenge
+    secp256k1_sha256_initialize(&sha);
+    secp256k1_sha256_write(&sha, spk->buf, 33);
+    secp256k1_sha256_write(&sha, W, 32);
+    secp256k1_sha256_write(&sha, name, name_len);
+    secp256k1_sha256_finalize(&sha, chalBuf);
+
+    for (int i = 0; i < N; i++) {
+        memcpy(cints[i].buf, mpks[i].buf, 33);
+    }
+
+    return secp256k1_verify_zero_mcom_DBPoE_proof(ctx, rctx, proof, cints, N, m, chalBuf);
 }
 
 
