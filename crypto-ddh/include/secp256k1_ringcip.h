@@ -200,13 +200,15 @@ SECP256K1_API int secp256k1_boquila_prove_DBPoE_memmpk(
         const secp256k1_context* ctx,
         const ringcip_DBPoE_context* rctx,
         uint8_t *proof,
+        uint8_t *nullifier,
         pk_t *mpks,
         const uint8_t* msk,
         const uint8_t* W,
         const uint8_t* name,
         int name_len,
-        pk_t * wpk,
+        pk_t * spk,
         int32_t j,
+        int topic_index,
         int32_t N, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
@@ -215,16 +217,18 @@ SECP256K1_API int secp256k1_boquila_verify_DBPoE_memmpk(
         const secp256k1_context* ctx,
         const ringcip_DBPoE_context* rctx,
         uint8_t *proof,
+        uint8_t *nullifier,
         pk_t *mpks,
         const uint8_t* W,
         const uint8_t* name,
         int name_len,
-        pk_t * wpk,
+        pk_t * spk,
+        int topic_index,
         int32_t N, int m)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
 
 
-SECP256K1_API int secp256k1_boquila_prove_newcpk(
+SECP256K1_API int secp256k1_boquila_auth_prove(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
         uint8_t *proof,
@@ -232,22 +236,20 @@ SECP256K1_API int secp256k1_boquila_prove_newcpk(
         const uint8_t* r,
         const uint8_t* name,
         int name_len,
-        pk_t * wpk,
-        pk_t * cpk,
+        pk_t * spk,
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
 
-SECP256K1_API int secp256k1_boquila_verify_newcpk(
+SECP256K1_API int secp256k1_boquila_auth_verify(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
         uint8_t *proof,
-        pk_t * wpk,
-        pk_t * cpk,
+        pk_t * spk,
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
-SECP256K1_API int secp256k1_boquila_prove_DBPoE_newcpk(
+SECP256K1_API int secp256k1_boquila_DBPoE_auth_prove(
         const secp256k1_context* ctx,
         const ringcip_DBPoE_context* rctx,
         uint8_t *proof,
@@ -255,18 +257,16 @@ SECP256K1_API int secp256k1_boquila_prove_DBPoE_newcpk(
         const uint8_t* r,
         const uint8_t* name,
         int name_len,
-        pk_t * wpk,
-        pk_t * cpk,
+        pk_t * spk,
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 
 
-SECP256K1_API int secp256k1_boquila_verify_DBPoE_newcpk(
+SECP256K1_API int secp256k1_boquila_DBPoE_auth_verify(
         const secp256k1_context* ctx,
         const ringcip_DBPoE_context* rctx,
         uint8_t *proof,
-        pk_t * wpk,
-        pk_t * cpk,
+        pk_t * spk,
         uint8_t *chal)
 SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4) SECP256K1_ARG_NONNULL(5);
 

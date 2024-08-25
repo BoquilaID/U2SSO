@@ -705,7 +705,7 @@ int secp256k1_verify_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
  * chal should be 32 bytes
  */
 int secp256k1_create_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const ringcip_DBPoE_context *rctx,
-                                     uint8_t *proof, cint_pt *Cs, int index, secp256k1_scalar *vals, int ring_size, int m, uint8_t *chal) {
+                                     uint8_t *proof, cint_pt *Cs, int index, secp256k1_scalar *vals, int ring_size, int topic_index, int m, uint8_t *chal) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(Cs != NULL);
@@ -869,9 +869,11 @@ int secp256k1_create_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
         secp256k1_ecmult_const(&tmpj, &geng[0], &rho[0][j], 256);
         secp256k1_ge_set_gej(&Q[j], &tmpj);
         for (i = 1; i < rctx->topic_size + 1; i++) {
+            if (i != topic_index) {
             secp256k1_ecmult_const(&tmpj, &geng[i], &rho[i][j], 256);
             secp256k1_gej_add_ge(&tmpj, &tmpj, &Q[j]);
             secp256k1_ge_set_gej(&Q[j], &tmpj);
+            }
         }
         for (t = 0; t < ring_size; t++) {
             secp256k1_ecmult_const(&tmpj, &c_ge[t], &p[t][j], 256);
@@ -924,16 +926,18 @@ int secp256k1_create_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
 
     // z := kx^m - sum_{j=0}^{m} rho_jx^j
     for (i = 0; i < rctx->topic_size + 1; i++) {
-        secp256k1_scalar_set_int(&z[i], 0);
-        secp256k1_scalar_set_int(&tmp1, 1);
-        for (j = 0; j < m; j++) {
-            secp256k1_scalar_mul(&tmp, &rho[i][j], &tmp1);
+        if (i != topic_index) {
+            secp256k1_scalar_set_int(&z[i], 0);
+            secp256k1_scalar_set_int(&tmp1, 1);
+            for (j = 0; j < m; j++) {
+                secp256k1_scalar_mul(&tmp, &rho[i][j], &tmp1);
+                secp256k1_scalar_add(&z[i], &z[i], &tmp);
+                secp256k1_scalar_mul(&tmp1, &tmp1, &x);
+            }
+            secp256k1_scalar_negate(&z[i], &z[i]);
+            secp256k1_scalar_mul(&tmp, &vals[i], &tmp1);
             secp256k1_scalar_add(&z[i], &z[i], &tmp);
-            secp256k1_scalar_mul(&tmp1, &tmp1, &x);
         }
-        secp256k1_scalar_negate(&z[i], &z[i]);
-        secp256k1_scalar_mul(&tmp, &vals[i], &tmp1);
-        secp256k1_scalar_add(&z[i], &z[i], &tmp);
     }
 
     // Update proof
@@ -948,8 +952,10 @@ int secp256k1_create_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
     secp256k1_scalar_get_b32(proof + pointer, &zC);
     pointer += 32;
     for (i = 0; i < rctx->topic_size + 1; i++) {
-        secp256k1_scalar_get_b32(proof + pointer, &z[i]);
-        pointer += 32;
+        if (i != topic_index) {
+            secp256k1_scalar_get_b32(proof + pointer, &z[i]);
+            pointer += 32;
+        }
     }
 
     free(multigen);
@@ -961,7 +967,7 @@ int secp256k1_create_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
 
 
 int secp256k1_verify_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const ringcip_DBPoE_context *rctx,
-                                     uint8_t *proof, cint_pt *Cs, int ring_size, int m, uint8_t *chal) {
+                                     uint8_t *proof, cint_pt *Cs, int ring_size, int topic_index, int m, uint8_t *chal) {
     ARG_CHECK(ctx != NULL);
     ARG_CHECK(rctx != NULL);
     ARG_CHECK(Cs != NULL);
@@ -1054,12 +1060,14 @@ int secp256k1_verify_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
     }
     pointer += 32;
     for (i = 0; i < rctx->topic_size + 1; i++) {
-        secp256k1_scalar_set_b32(&z[i], proof + pointer, &overflow);
-        if (overflow) {
-            free(multigen);
-            return 0;
+        if (i != topic_index) {
+            secp256k1_scalar_set_b32(&z[i], proof + pointer, &overflow);
+            if (overflow) {
+                free(multigen);
+                return 0;
+            }
+            pointer += 32;
         }
-        pointer += 32;
     }
 
     secp256k1_ge LHS;
@@ -1092,9 +1100,11 @@ int secp256k1_verify_zero_mcom_DBPoE_proof(const secp256k1_context* ctx, const r
     secp256k1_ecmult_const(&tmpj, &geng[0], &z[0], 256);
     secp256k1_ge_set_gej(&RHS, &tmpj);
     for (i = 1; i < rctx->topic_size + 1; i++) {
-        secp256k1_ecmult_const(&tmpj, &geng[i], &z[i], 256);
-        secp256k1_gej_add_ge(&tmpj, &tmpj, &RHS);
-        secp256k1_ge_set_gej(&RHS, &tmpj);
+        if (i != topic_index) {
+            secp256k1_ecmult_const(&tmpj, &geng[i], &z[i], 256);
+            secp256k1_gej_add_ge(&tmpj, &tmpj, &RHS);
+            secp256k1_ge_set_gej(&RHS, &tmpj);
+        }
     }
 
     uint8_t lbuf[33];

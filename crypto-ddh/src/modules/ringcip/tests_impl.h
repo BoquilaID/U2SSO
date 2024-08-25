@@ -86,11 +86,12 @@ int test_boquila(void) {
         }
 
         int j = 0;
-        CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
-        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &wpk, j, N, m));
-        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &wpk, N, m));
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &cpk, j, N, m));
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &cpk, N, m));
 
         // ==============================================
 
@@ -99,8 +100,8 @@ int test_boquila(void) {
         uint8_t chal[32];
         memset(chal, 0xff, 32);
         uint8_t proofnew[64 + 33];
-        CHECK(secp256k1_boquila_prove_newcpk(ctx, &rctx, proofnew, msks[j], r, name, name_len, &wpk, &cpk, chal));
-        CHECK(secp256k1_boquila_verify_newcpk(ctx, &rctx, proofnew, &wpk, &cpk, chal));
+        CHECK(secp256k1_boquila_auth_prove(ctx, &rctx, proofnew, msks[j], r, name, name_len, &cpk, chal));
+        CHECK(secp256k1_boquila_auth_verify(ctx, &rctx, proofnew, &cpk, chal));
 
         free(proof);
 
@@ -118,11 +119,12 @@ int test_boquila(void) {
         }
 
         int j = 0;
-        CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
-        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &wpk, j, N, m));
-        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &wpk, N, m));
+        CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &cpk, j, N, m));
+        CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &cpk, N, m));
 
         // ==============================================
 
@@ -131,8 +133,8 @@ int test_boquila(void) {
         uint8_t chal[32];
         memset(chal, 0xff, 32);
         uint8_t proofnew[64 + 33];
-        CHECK(secp256k1_boquila_prove_newcpk(ctx, &rctx, proofnew, msks[j], r, name, name_len, &wpk, &cpk, chal));
-        CHECK(secp256k1_boquila_verify_newcpk(ctx, &rctx, proofnew, &wpk, &cpk, chal));
+        CHECK(secp256k1_boquila_auth_prove(ctx, &rctx, proofnew, msks[j], r, name, name_len, &cpk, chal));
+        CHECK(secp256k1_boquila_auth_verify(ctx, &rctx, proofnew, &cpk, chal));
 
         free(proof);
 
@@ -231,7 +233,8 @@ int test_boquila_bench(void) {
         CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpks[i], msks[i]));
     }
     int j = 0;
-    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+    CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+    CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
     int N = 8;
     int test_cases = 10;
@@ -241,13 +244,13 @@ int test_boquila_bench(void) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &wpk, j, N, m));
+            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &cpk, j, N, m));
         }
         clock_t end = clock();
         double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
         begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &wpk, N, m));
+            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &cpk, N, m));
         }
         end = clock();
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
@@ -298,7 +301,8 @@ int test_boquila_3_bench(void) {
         CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpks[i], msks[i]));
     }
     int j = 0;
-    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len));
+    CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+    CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
     int N = 9;
     int test_cases = 10;
@@ -308,13 +312,13 @@ int test_boquila_3_bench(void) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &wpk, j, N, m));
+            CHECK(secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &cpk, j, N, m));
         }
         clock_t end = clock();
         double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
         begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &wpk, N, m));
+            CHECK(secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &cpk, N, m));
         }
         end = clock();
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
@@ -363,29 +367,32 @@ int test_boquila_DBPoE_bench(void) {
         CHECK(secp256k1_boquila_gen_DBPoE_mpk(ctx, &rctx, &mpks[i], msks[i]));
     }
     int j = 0;
+    int topic_index = 1;
     CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
-    CHECK(secp256k1_boquila_derive_DBPoE_spk(ctx, &rctx, &wpk, csk));
+    CHECK(secp256k1_boquila_derive_DBPoE_spk(ctx, &rctx, &cpk, csk));
 
     int N = 8;
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;
     for (int m = 3; m < rctx.m; m++) {
+        uint8_t nullifier[32];
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &wpk, j, N, m));
+            CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name, name_len, &cpk, j, topic_index, N, m));
         }
         clock_t end = clock();
         double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
         begin = clock();
         for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &wpk, N, m));
+            CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name, name_len, &cpk, topic_index, N, m));
         }
         end = clock();
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
         free(proof);
         N *= rctx.n;
+        printarray(nullifier, 32);
         printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
     }
     secp256k1_ringcip_DBPoE_context_clear(&rctx);
