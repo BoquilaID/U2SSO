@@ -266,11 +266,11 @@ int get_jth(int j, int n, int num) {
 
 
 int secp256k1_zero_mcom_get_size(const ringcip_context *rctx, int m) { // todo: change m according to N
-    return 33*(4+m) + 32*(3+(m*rctx->n));
+    return 33*(4+m) + 32*(3+(m*(rctx->n - 1)));
 }
 
 int secp256k1_zero_mcom_DBPoE_get_size(const ringcip_DBPoE_context *rctx, int m) { // todo: change m according to N
-    return 33*(4+m) + 32*(3+ rctx->topic_size +(m*rctx->n));
+    return 33*(4+m) + 32*(2+rctx->topic_size +(m*(rctx->n - 1)));
 }
 
 /*
