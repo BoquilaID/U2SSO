@@ -38,9 +38,11 @@ int main() {
     int m = 10;
     uint8_t gen_seed[32];
     uint8_t msk[64];
+    uint8_t ssk[32];
+    pk_t spk;
     uint8_t r[64];
     uint8_t name[4] = {'a', 'b', 'c', 'd'};
-    int32_t name_len = 4;
+    int name_len = 4;
     int t;
 
     memset(gen_seed, 0, 32);
@@ -48,7 +50,9 @@ int main() {
 
     printf("Maximum N: %d\n", rctx.N);
 
-    pk_t wpk;
+    uint8_t chalregi[32];
+    memset(chalregi, 0xff, 32);
+
 
     pk_t mpks[1024];
     uint8_t msks[1024][64];
@@ -59,7 +63,10 @@ int main() {
         }
     }
     int j = 0;
-    if (secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msks[j], name, name_len) == 0) {
+    if (secp256k1_boquila_derive_ssk(ctx, ssk, msks[j], name, name_len) == 0) {
+        printf("csk creation failed");
+    }
+    if (secp256k1_boquila_derive_spk(ctx, &rctx, &spk, ssk) == 0) {
         printf("wpk creation failed");
     }
 
@@ -67,13 +74,13 @@ int main() {
     for (int m = 3; m < rctx.m; m++) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
-        if (secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], name, name_len, &wpk, j, N, m) == 0) {
+        if (secp256k1_boquila_prove_memmpk(ctx, &rctx, proof, mpks, msks[j], chalregi, name, name_len, &spk, j, N, m) == 0) {
             printf("proving membership failed\n");
         }
         clock_t end = clock();
         double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
         begin = clock();
-        if (secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, &wpk, N, m) == 0)  {
+        if (secp256k1_boquila_verify_memmpk(ctx, &rctx, proof, mpks, chalregi, name, name_len, &spk, N, m) == 0)  {
             printf("proving membership failed\n");
         }
         end = clock();
