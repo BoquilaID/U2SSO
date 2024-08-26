@@ -31,7 +31,7 @@ var (
 
 // U2ssoMetaData contains all meta data concerning the U2sso contract.
 var U2ssoMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"addID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getIDs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getIDsize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idlist\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"id33\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"revokeID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"addID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"getIDIndex\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getIDSize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getIDs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idList\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"id33\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"revokeID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // U2ssoABI is the input ABI used to generate the binding from.
@@ -180,6 +180,68 @@ func (_U2sso *U2ssoTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _U2sso.Contract.contract.Transact(opts, method, params...)
 }
 
+// GetIDIndex is a free data retrieval call binding the contract method 0x9a80d1dd.
+//
+// Solidity: function getIDIndex(uint256 _id, uint256 _id33) view returns(int256)
+func (_U2sso *U2ssoCaller) GetIDIndex(opts *bind.CallOpts, _id *big.Int, _id33 *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _U2sso.contract.Call(opts, &out, "getIDIndex", _id, _id33)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetIDIndex is a free data retrieval call binding the contract method 0x9a80d1dd.
+//
+// Solidity: function getIDIndex(uint256 _id, uint256 _id33) view returns(int256)
+func (_U2sso *U2ssoSession) GetIDIndex(_id *big.Int, _id33 *big.Int) (*big.Int, error) {
+	return _U2sso.Contract.GetIDIndex(&_U2sso.CallOpts, _id, _id33)
+}
+
+// GetIDIndex is a free data retrieval call binding the contract method 0x9a80d1dd.
+//
+// Solidity: function getIDIndex(uint256 _id, uint256 _id33) view returns(int256)
+func (_U2sso *U2ssoCallerSession) GetIDIndex(_id *big.Int, _id33 *big.Int) (*big.Int, error) {
+	return _U2sso.Contract.GetIDIndex(&_U2sso.CallOpts, _id, _id33)
+}
+
+// GetIDSize is a free data retrieval call binding the contract method 0x2d3d1104.
+//
+// Solidity: function getIDSize() view returns(uint256)
+func (_U2sso *U2ssoCaller) GetIDSize(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _U2sso.contract.Call(opts, &out, "getIDSize")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetIDSize is a free data retrieval call binding the contract method 0x2d3d1104.
+//
+// Solidity: function getIDSize() view returns(uint256)
+func (_U2sso *U2ssoSession) GetIDSize() (*big.Int, error) {
+	return _U2sso.Contract.GetIDSize(&_U2sso.CallOpts)
+}
+
+// GetIDSize is a free data retrieval call binding the contract method 0x2d3d1104.
+//
+// Solidity: function getIDSize() view returns(uint256)
+func (_U2sso *U2ssoCallerSession) GetIDSize() (*big.Int, error) {
+	return _U2sso.Contract.GetIDSize(&_U2sso.CallOpts)
+}
+
 // GetIDs is a free data retrieval call binding the contract method 0x6f1acd98.
 //
 // Solidity: function getIDs(uint256 _index) view returns(uint256, uint256)
@@ -210,37 +272,6 @@ func (_U2sso *U2ssoSession) GetIDs(_index *big.Int) (*big.Int, *big.Int, error) 
 // Solidity: function getIDs(uint256 _index) view returns(uint256, uint256)
 func (_U2sso *U2ssoCallerSession) GetIDs(_index *big.Int) (*big.Int, *big.Int, error) {
 	return _U2sso.Contract.GetIDs(&_U2sso.CallOpts, _index)
-}
-
-// GetIDsize is a free data retrieval call binding the contract method 0x689f5b2d.
-//
-// Solidity: function getIDsize() view returns(uint256)
-func (_U2sso *U2ssoCaller) GetIDsize(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _U2sso.contract.Call(opts, &out, "getIDsize")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetIDsize is a free data retrieval call binding the contract method 0x689f5b2d.
-//
-// Solidity: function getIDsize() view returns(uint256)
-func (_U2sso *U2ssoSession) GetIDsize() (*big.Int, error) {
-	return _U2sso.Contract.GetIDsize(&_U2sso.CallOpts)
-}
-
-// GetIDsize is a free data retrieval call binding the contract method 0x689f5b2d.
-//
-// Solidity: function getIDsize() view returns(uint256)
-func (_U2sso *U2ssoCallerSession) GetIDsize() (*big.Int, error) {
-	return _U2sso.Contract.GetIDsize(&_U2sso.CallOpts)
 }
 
 // GetState is a free data retrieval call binding the contract method 0x44c9af28.
@@ -274,16 +305,16 @@ func (_U2sso *U2ssoCallerSession) GetState(_index *big.Int) (bool, error) {
 	return _U2sso.Contract.GetState(&_U2sso.CallOpts, _index)
 }
 
-// Idlist is a free data retrieval call binding the contract method 0x299955b0.
+// IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idlist(uint256 ) view returns(uint256 id, uint256 id33, bool active)
-func (_U2sso *U2ssoCaller) Idlist(opts *bind.CallOpts, arg0 *big.Int) (struct {
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+func (_U2sso *U2ssoCaller) IdList(opts *bind.CallOpts, arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
 }, error) {
 	var out []interface{}
-	err := _U2sso.contract.Call(opts, &out, "idlist", arg0)
+	err := _U2sso.contract.Call(opts, &out, "idList", arg0)
 
 	outstruct := new(struct {
 		Id     *big.Int
@@ -302,26 +333,26 @@ func (_U2sso *U2ssoCaller) Idlist(opts *bind.CallOpts, arg0 *big.Int) (struct {
 
 }
 
-// Idlist is a free data retrieval call binding the contract method 0x299955b0.
+// IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idlist(uint256 ) view returns(uint256 id, uint256 id33, bool active)
-func (_U2sso *U2ssoSession) Idlist(arg0 *big.Int) (struct {
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+func (_U2sso *U2ssoSession) IdList(arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
 }, error) {
-	return _U2sso.Contract.Idlist(&_U2sso.CallOpts, arg0)
+	return _U2sso.Contract.IdList(&_U2sso.CallOpts, arg0)
 }
 
-// Idlist is a free data retrieval call binding the contract method 0x299955b0.
+// IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idlist(uint256 ) view returns(uint256 id, uint256 id33, bool active)
-func (_U2sso *U2ssoCallerSession) Idlist(arg0 *big.Int) (struct {
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+func (_U2sso *U2ssoCallerSession) IdList(arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
 }, error) {
-	return _U2sso.Contract.Idlist(&_U2sso.CallOpts, arg0)
+	return _U2sso.Contract.IdList(&_U2sso.CallOpts, arg0)
 }
 
 // AddID is a paid mutator transaction binding the contract method 0x72b8dee1.

@@ -1,4 +1,4 @@
-package main
+package u2sso
 
 import (
 	"context"
@@ -6,15 +6,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"io"
 	"log"
-	u2sso "main/u2sso"
 	"math/big"
 	"os"
-	"strconv"
 	"unsafe"
 )
 
@@ -28,73 +25,19 @@ import (
 // #include <secp256k1_ringcip.h>
 import "C"
 
-var gen_seed_fix = 11
-var n = 2
-var m = 10
+const gen_seed_fix = 11
+const N = 2
+const M = 10
 
-func main() {
-	// address of etherum env
-	client, err := ethclient.Dial("http://127.0.0.1:7545")
-	if err != nil {
-		panic(err)
-	}
-
-	// 0x80ea5Dca7B5c3265dF3530b69a3D680b1a34fEea
-	contractAddress := common.HexToAddress("0xd1207e47BEDD2721c23aD74B6EE3d093Fc309106")
-	bytecode, err := client.CodeAt(context.Background(), contractAddress, nil) // nil is latest block
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	isContract := len(bytecode) > 0
-
-	fmt.Printf("is contract: %v\n", isContract) // is contract: true
-
-	instance, err := u2sso.NewU2sso(contractAddress, client)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	idsize, err := instance.GetIDsize(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("initial id size:", idsize)
-
-	// store 8 IDs
-	for i := 0; i < 8; i++ {
-		createPasskey("passkey" + strconv.Itoa(i+int(idsize.Int64())) + ".txt")
-		mskBytes, val := loadPasskey("passkey" + strconv.Itoa(i) + ".txt")
-		fmt.Println("passkey:", mskBytes, val)
-
-		idBytes := createID(mskBytes)
-
-		skString := "58a03acf0da8bcda1c1d8f605d78eadc9fd34684fae22c8536d929dc34330d5f"
-		fmt.Println("added ID:", addIDstoIdR(client, skString, instance, idBytes), ", ", idBytes)
-
-		_ = mskBytes
-	}
-
-	fmt.Println("total Id size:", getIDfromContract(instance))
-	IdList := getallActiveIDfromContract(instance)
-	fmt.Println("all active ids:", IdList)
-
-	mskBytes, val := loadPasskey("passkey" + strconv.Itoa(1) + ".txt")
-	fmt.Println("passkey:", mskBytes, val)
-
-	serviceName := make([]byte, 32)
-	challenge := make([]byte, 32)
-	proofHex, spkBytes, val := registrationProof(1, 3, 8, serviceName, challenge, mskBytes, IdList)
-	fmt.Println("registration: ", val, spkBytes)
-	fmt.Println("registration ver: ", registrationVerify(proofHex, 3, 8, serviceName, challenge, IdList, spkBytes))
-
-	proofAuthHex, val := authProof(serviceName, challenge, mskBytes)
-	fmt.Println("authentication: ", val)
-	fmt.Println("authentication ver: ", authVerify(proofAuthHex, serviceName, challenge, spkBytes))
-
+func CreateChallenge() []byte {
+	chal := make([]C.uint8_t, 32)
+	chalPtr := (*C.uint8_t)(unsafe.Pointer(&chal[0]))
+	C.RAND_bytes(chalPtr, 32)
+	chalBytes := C.GoBytes(unsafe.Pointer(chalPtr), 32)
+	return chalBytes
 }
 
-func createPasskey(filename string) {
+func CreatePasskey(filename string) {
 	msk := make([]C.uint8_t, 32)
 	mskPtr := (*C.uint8_t)(unsafe.Pointer(&msk[0]))
 	C.RAND_bytes(mskPtr, 32)
@@ -116,7 +59,7 @@ func createPasskey(filename string) {
 	}
 }
 
-func loadPasskey(filename string) ([]byte, bool) {
+func LoadPasskey(filename string) ([]byte, bool) {
 	mskBytes := make([]byte, 32)
 
 	file, err := os.Open(filename)
@@ -139,7 +82,7 @@ func loadPasskey(filename string) ([]byte, bool) {
 	return mskBytes, true
 }
 
-func createID(mskBytes []byte) []byte {
+func CreateID(mskBytes []byte) []byte {
 	msk := make([]C.uint8_t, 32)
 	mskPtr := (*C.uint8_t)(unsafe.Pointer(&msk[0]))
 	for i := 0; i < 32; i++ {
@@ -150,7 +93,7 @@ func createID(mskBytes []byte) []byte {
 	gen_seed := (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * 32))
 	defer C.free(unsafe.Pointer(gen_seed))
 	C.memset(unsafe.Pointer(gen_seed), C.int(gen_seed_fix), 32) // 11
-	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(n), C.int(m), gen_seed, nil)
+	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(N), C.int(M), gen_seed, nil)
 
 	mpk := make([]C.pk_t, 1)
 	if C.secp256k1_boquila_gen_mpk(ctx, &rctx, &mpk[0], mskPtr) == 0 {
@@ -161,9 +104,9 @@ func createID(mskBytes []byte) []byte {
 }
 
 /*
-m should be log(n)
+M should be log(N)
 */
-func registrationProof(index int, currentm int, currentN int, serviceName []byte, challenge []byte, mskBytes []byte, idList [][]byte) (string, []byte, bool) {
+func RegistrationProof(index int, currentm int, currentN int, serviceName []byte, challenge []byte, mskBytes []byte, idList [][]byte) (string, []byte, bool) {
 	msk := make([]C.uint8_t, 32)
 	ssk := make([]C.uint8_t, 32)
 	mskPtr := (*C.uint8_t)(unsafe.Pointer(&msk[0]))
@@ -181,7 +124,7 @@ func registrationProof(index int, currentm int, currentN int, serviceName []byte
 	gen_seed := (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * 32))
 	defer C.free(unsafe.Pointer(gen_seed))
 	C.memset(unsafe.Pointer(gen_seed), C.int(gen_seed_fix), 32) // 11
-	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(n), C.int(m), gen_seed, nil)
+	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(N), C.int(M), gen_seed, nil)
 
 	// create proof
 	// create a webkey for mpk j
@@ -219,7 +162,7 @@ func registrationProof(index int, currentm int, currentN int, serviceName []byte
 	// arrange ID list
 	mpks := make([]C.pk_t, C.int(currentN))
 	mpksPtr := (*C.pk_t)(unsafe.Pointer(&mpks[0]))
-	for i := 0; i < 8; i++ {
+	for i := 0; i < currentN; i++ {
 		for l := 0; l < 33; l++ {
 			mpks[i].buf[l] = C.uint8_t(idList[i][l])
 		}
@@ -258,9 +201,9 @@ func registrationProof(index int, currentm int, currentN int, serviceName []byte
 }
 
 /*
-m should be log(n)
+M should be log(N)
 */
-func registrationVerify(proofHex string, currentm int, currentN int, serviceName []byte, challenge []byte, idList [][]byte, spkBytes []byte) bool {
+func RegistrationVerify(proofHex string, currentm int, currentN int, serviceName []byte, challenge []byte, idList [][]byte, spkBytes []byte) bool {
 	chal := make([]C.uint8_t, 32)
 	chalPtr := (*C.uint8_t)(unsafe.Pointer(&chal[0]))
 	for i := 0; i < 32; i++ {
@@ -271,7 +214,7 @@ func registrationVerify(proofHex string, currentm int, currentN int, serviceName
 	gen_seed := (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * 32))
 	defer C.free(unsafe.Pointer(gen_seed))
 	C.memset(unsafe.Pointer(gen_seed), C.int(gen_seed_fix), 32) // 11
-	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(n), C.int(m), gen_seed, nil)
+	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(N), C.int(M), gen_seed, nil)
 
 	// create proof
 	// create a webkey for mpk j
@@ -290,7 +233,7 @@ func registrationVerify(proofHex string, currentm int, currentN int, serviceName
 	// arrange ID list
 	mpks := make([]C.pk_t, C.int(currentN))
 	mpksPtr := (*C.pk_t)(unsafe.Pointer(&mpks[0]))
-	for i := 0; i < 8; i++ {
+	for i := 0; i < currentN; i++ {
 		for l := 0; l < 33; l++ {
 			mpks[i].buf[l] = C.uint8_t(idList[i][l])
 		}
@@ -315,7 +258,7 @@ func registrationVerify(proofHex string, currentm int, currentN int, serviceName
 	return true
 }
 
-func authProof(serviceName []byte, challenge []byte, mskBytes []byte) (string, bool) {
+func AuthProof(serviceName []byte, challenge []byte, mskBytes []byte) (string, bool) {
 	msk := make([]C.uint8_t, 32)
 	ssk := make([]C.uint8_t, 32)
 	mskPtr := (*C.uint8_t)(unsafe.Pointer(&msk[0]))
@@ -333,7 +276,7 @@ func authProof(serviceName []byte, challenge []byte, mskBytes []byte) (string, b
 	gen_seed := (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * 32))
 	defer C.free(unsafe.Pointer(gen_seed))
 	C.memset(unsafe.Pointer(gen_seed), C.int(gen_seed_fix), 32) // 11
-	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(n), C.int(m), gen_seed, nil)
+	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(N), C.int(M), gen_seed, nil)
 
 	// create proof
 	// create a webkey for mpk j
@@ -373,7 +316,7 @@ func authProof(serviceName []byte, challenge []byte, mskBytes []byte) (string, b
 	return proofHex, true
 }
 
-func authVerify(proofHex string, serviceName []byte, challenge []byte, spkBytes []byte) bool {
+func AuthVerify(proofHex string, serviceName []byte, challenge []byte, spkBytes []byte) bool {
 	chal := make([]C.uint8_t, 32)
 	chalPtr := (*C.uint8_t)(unsafe.Pointer(&chal[0]))
 	for i := 0; i < 32; i++ {
@@ -384,7 +327,7 @@ func authVerify(proofHex string, serviceName []byte, challenge []byte, spkBytes 
 	gen_seed := (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * 32))
 	defer C.free(unsafe.Pointer(gen_seed))
 	C.memset(unsafe.Pointer(gen_seed), C.int(gen_seed_fix), 32) // 11
-	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(n), C.int(m), gen_seed, nil)
+	rctx := C.secp256k1_ringcip_context_create(ctx, C.int(10), C.int(N), C.int(M), gen_seed, nil)
 
 	var spk C.pk_t
 	for i := 0; i < 33; i++ {
@@ -412,7 +355,7 @@ func authVerify(proofHex string, serviceName []byte, challenge []byte, spkBytes 
 *
 Adds an id to the contract
 */
-func addIDstoIdR(client *ethclient.Client, sk string, inst *u2sso.U2sso, id []byte) int64 {
+func AddIDstoIdR(client *ethclient.Client, sk string, inst *U2sso, id []byte) int64 {
 	privateKey, err := crypto.HexToECDSA(sk)
 	if err != nil {
 		log.Fatal(err)
@@ -446,27 +389,24 @@ func addIDstoIdR(client *ethclient.Client, sk string, inst *u2sso.U2sso, id []by
 	byte32 := new(big.Int).SetBytes(id[:32])
 	byte33 := new(big.Int).SetBytes(id[32:])
 
-	tx, err := inst.AddID(auth, byte32, byte33)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_ = tx
-
-	//log.Println("tx sent: %s\n", tx.Hash().Hex())
-
-	result, err := inst.GetIDsize(nil)
+	_, err = inst.AddID(auth, byte32, byte33)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return result.Int64()
+	index, err := inst.GetIDIndex(nil, byte32, byte33)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return index.Int64()
 }
 
 /*
 Gives the total ID size in the contract
 */
-func getIDfromContract(inst *u2sso.U2sso) int64 {
-	result, err := inst.GetIDsize(nil)
+func GetIDfromContract(inst *U2sso) int64 {
+	result, err := inst.GetIDSize(nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -475,13 +415,30 @@ func getIDfromContract(inst *u2sso.U2sso) int64 {
 }
 
 /*
+Gives the total ID index in the contract
+*/
+func GetIDIndexfromContract(inst *U2sso, id []byte) int64 {
+	//key := [32]byte{}
+	//copy(key[:], []byte("foo"))
+	byte32 := new(big.Int).SetBytes(id[:32])
+	byte33 := new(big.Int).SetBytes(id[32:])
+
+	index, err := inst.GetIDIndex(nil, byte32, byte33)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return index.Int64()
+}
+
+/*
 Get all active IDs from the list
 */
-func getallActiveIDfromContract(inst *u2sso.U2sso) [][]byte {
+func GetallActiveIDfromContract(inst *U2sso) [][]byte {
 
 	idlist := make([][]byte, 0)
 
-	idSize, err := inst.GetIDsize(nil)
+	idSize, err := inst.GetIDSize(nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -498,7 +455,11 @@ func getallActiveIDfromContract(inst *u2sso.U2sso) [][]byte {
 				log.Fatal(err)
 			}
 			id := idbytes32.Bytes()
-			id = append(id, idbyte33.Bytes()[0])
+			if idbyte33.Int64() == 0 {
+				id = append(id, byte(0))
+			} else {
+				id = append(id, idbyte33.Bytes()[0])
+			}
 
 			idlist = append(idlist, id)
 		}
