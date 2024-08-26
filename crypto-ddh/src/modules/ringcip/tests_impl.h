@@ -168,11 +168,12 @@ int test_ringcip(void) {
     uint8_t chalregi[32];
     memset(chalregi, 0xff, 32);
 
-    int N = rctx.N;
-    cint_pt Cs[N];
-    cint_st Csks[N];
-    int index = 3;
-    for (t = 0; t < N; t++) {
+    int currentN = 4;
+    int currentm = 2;
+    cint_pt Cs[currentN];
+    cint_st Csks[currentN];
+    int index = 1;
+    for (t = 0; t < currentN; t++) {
         if (t != index) {
             secp256k1_rand256(keybuf);
             CHECK(secp256k1_create_secret_cint(ctx, &rctx, &Csks[t], 10, keybuf));
@@ -183,15 +184,16 @@ int test_ringcip(void) {
             CHECK(secp256k1_create_cint(ctx, &rctx, &Cs[t], &Csks[t]));
         }
     }
-    uint8_t *proof = (uint8_t*) malloc(secp256k1_zero_mcom_get_size(&rctx, rctx.m)*sizeof(uint8_t));
-    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index, &Csks[index].key, N, rctx.m, chalregi));
-    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N, rctx.m, chalregi));
+    uint8_t *proof = (uint8_t*) malloc(secp256k1_zero_mcom_get_size(&rctx, currentm)*sizeof(uint8_t));
+    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index, &Csks[index].key, currentN, currentm, chalregi));
+    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, currentN, currentm, chalregi));
 
-    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index + 1, &Csks[index].key, N, rctx.m, chalregi));
-    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, N, rctx.m, chalregi) == 0);
+    CHECK(secp256k1_create_zero_mcom_proof(ctx, &rctx, proof, Cs, index + 1, &Csks[index].key, currentN, currentm, chalregi));
+    CHECK(secp256k1_verify_zero_mcom_proof(ctx, &rctx, proof, Cs, currentN, currentm, chalregi) == 0);
 
     free(proof);
     secp256k1_ringcip_context_clear(&rctx);
+    printf("passed ring cip tests for ring sizes that are not power of n\n");
 
     return 1;
 }
@@ -236,7 +238,7 @@ int test_boquila_bench(void) {
     CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
     CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
-    int N = 8;
+    int N = 7;
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;

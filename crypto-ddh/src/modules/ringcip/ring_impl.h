@@ -287,7 +287,6 @@ int secp256k1_create_zero_mcom_proof(const secp256k1_context* ctx, const ringcip
     for (int i = 0; i < m; i++) {
         tmpN *= rctx->n;
     }
-    //printf("%d %d\n", tmpN, ring_size);
     if (tmpN < ring_size)
         return 0;
     ARG_CHECK(index < ring_size);
