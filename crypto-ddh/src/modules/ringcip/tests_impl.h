@@ -238,7 +238,7 @@ int test_boquila_bench(void) {
     CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
     CHECK(secp256k1_boquila_derive_spk(ctx, &rctx, &cpk, csk));
 
-    int N = 7;
+    int N = 8;
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;
@@ -258,7 +258,7 @@ int test_boquila_bench(void) {
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
         free(proof);
         N *= rctx.n;
-        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
+        printf("%d, %d, %d, %f, %f\n", N, m, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
@@ -310,7 +310,7 @@ int test_boquila_3_bench(void) {
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;
-    for (int m = 3; m < rctx.m; m++) {
+    for (int m = 2; m < rctx.m; m++) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
@@ -326,7 +326,7 @@ int test_boquila_3_bench(void) {
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
         free(proof);
         N *= rctx.n;
-        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
+        printf("%d, %d, %d, %f, %f\n", N, m, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
@@ -343,61 +343,144 @@ int test_boquila_DBPoE_bench(void) {
     int t;
 
     memset(gen_seed, 0, 32);
-    uint8_t topics[64];
-    memset(topics, 1, 64);
-    int topic_size = 2;
-    ringcip_DBPoE_context rctx = secp256k1_ringcip_DBPoE_context_create(ctx, L, n, m, gen_seed, topics, topic_size);
-
-    CHECK(rctx.N == 1024); // 8, 16,
-
-    pk_t mpk;
-    pk_t wpk;
-    pk_t cpk;
-    uint8_t csk[32];
-    uint8_t csk1[32];
-    cint_st cintsk;
-    secp256k1_rand256(msk);
-    secp256k1_rand256(msk + 32);
-
-    uint8_t chalregi[32];
-    memset(chalregi, 0xff, 32);
-
-    pk_t mpks[1024];
-    uint8_t msks[1024][32];
-    for (int i = 0; i < 1024; i++) {
-        secp256k1_rand256(msks[i]);
-        CHECK(secp256k1_boquila_gen_DBPoE_mpk(ctx, &rctx, &mpks[i], msks[i]));
-    }
-    int j = 0;
-    int topic_index = 1;
-    CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
-    CHECK(secp256k1_boquila_derive_DBPoE_spk(ctx, &rctx, &cpk, csk));
-
-    int N = 8;
-    int test_cases = 10;
-    double proving_time = 0;
-    double verify_time = 0;
-    for (int m = 3; m < rctx.m; m++) {
-        uint8_t nullifier[32];
-        uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
-        clock_t begin = clock();
-        for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name, name_len, &cpk, j, topic_index, N, m));
+    for (int top = 100; top < 500; top=top+100) {
+        uint8_t topics[32 * top];
+        for (t = 0; t <= top; t++) {
+            memset(topics + t * 32, t, 32);
         }
-        clock_t end = clock();
-        double proving_time = (double)(end - begin) / CLOCKS_PER_SEC;
-        begin = clock();
-        for (t = 0; t < test_cases; t++) {
-            CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name, name_len, &cpk, topic_index, N, m));
+
+        int topic_size = top;
+        ringcip_DBPoE_context rctx = secp256k1_ringcip_DBPoE_context_create(ctx, L, n, m, gen_seed, topics, topic_size);
+        CHECK(rctx.N == 1024); // 8, 16,
+
+        pk_t mpk;
+        pk_t wpk;
+        pk_t cpk;
+        uint8_t csk[32];
+        uint8_t csk1[32];
+        cint_st cintsk;
+        secp256k1_rand256(msk);
+        secp256k1_rand256(msk + 32);
+
+        uint8_t chalregi[32];
+        memset(chalregi, 0xff, 32);
+
+        pk_t mpks[1024];
+        uint8_t msks[1024][32];
+        for (int i = 0; i < 1024; i++) {
+            secp256k1_rand256(msks[i]);
+            CHECK(secp256k1_boquila_gen_DBPoE_mpk(ctx, &rctx, &mpks[i], msks[i]));
         }
-        end = clock();
-        double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
-        free(proof);
-        N *= rctx.n;
-        printarray(nullifier, 32);
-        printf("%d, %d %f %f\n", N, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
+        int j = 0;
+        int topic_index = 1;
+        CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_DBPoE_spk(ctx, &rctx, &cpk, csk));
+
+        int N = 8;
+        int test_cases = 10;
+        double proving_time = 0;
+        double verify_time = 0;
+        for (int m = 3; m < rctx.m; m++) {
+            uint8_t nullifier[32];
+            uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
+            clock_t begin = clock();
+            for (t = 0; t < test_cases; t++) {
+                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name,
+                                                           name_len, &cpk, j, topic_index, N, m));
+            }
+            clock_t end = clock();
+            double proving_time = (double) (end - begin) / CLOCKS_PER_SEC;
+            begin = clock();
+            for (t = 0; t < test_cases; t++) {
+                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name,
+                                                            name_len, &cpk, topic_index, N, m));
+            }
+            end = clock();
+            double verify_time = (double) (end - begin) / CLOCKS_PER_SEC;
+            free(proof);
+            N *= rctx.n;
+            printf("%d, %d, %d, %f, %f, %d\n", N, m, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m),
+                   proving_time / test_cases, verify_time / test_cases, topic_size);
+        }
+        secp256k1_ringcip_DBPoE_context_clear(&rctx);
     }
-    secp256k1_ringcip_DBPoE_context_clear(&rctx);
+}
+
+
+int test_boquila_DBPoE_topic_bench(void) {
+    int L = 10;
+    int n = 3;
+    int m = 6;
+    uint8_t gen_seed[32];
+    uint8_t msk[64];
+    uint8_t r[64];
+    uint8_t name[4] = {'a', 'b', 'c', 'd'};
+    int32_t name_len = 4;
+    int t;
+
+    memset(gen_seed, 0, 32);
+    for (int top = 100; top < 500; top=top+100) {
+        uint8_t topics[32 * top];
+        for (t = 0; t <= top; t++) {
+            memset(topics + t*32, t, 32);
+        }
+
+        int topic_size = top;
+        ringcip_DBPoE_context rctx = secp256k1_ringcip_DBPoE_context_create(ctx, L, n, m, gen_seed, topics, topic_size);
+
+        CHECK(rctx.N == 729); // 8, 16,
+
+        pk_t mpk;
+        pk_t wpk;
+        pk_t cpk;
+        uint8_t csk[32];
+        uint8_t csk1[32];
+        cint_st cintsk;
+        secp256k1_rand256(msk);
+        secp256k1_rand256(msk + 32);
+
+        uint8_t chalregi[32];
+        memset(chalregi, 0xff, 32);
+
+        pk_t mpks[1024];
+        uint8_t msks[1024][32];
+        for (int i = 0; i < 1024; i++) {
+            secp256k1_rand256(msks[i]);
+            CHECK(secp256k1_boquila_gen_DBPoE_mpk(ctx, &rctx, &mpks[i], msks[i]));
+        }
+        int j = 0;
+        int topic_index = 1;
+        CHECK(secp256k1_boquila_derive_ssk(ctx, csk, msks[j], name, name_len));
+        CHECK(secp256k1_boquila_derive_DBPoE_spk(ctx, &rctx, &cpk, csk));
+
+        int N = 9;
+        int test_cases = 10;
+        double proving_time = 0;
+        double verify_time = 0;
+        for (int m = 2; m < rctx.m; m++) {
+            uint8_t nullifier[32];
+            uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
+            clock_t begin = clock();
+            for (t = 0; t < test_cases; t++) {
+                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name,
+                                                           name_len, &cpk, j, topic_index, N, m));
+            }
+            clock_t end = clock();
+            double proving_time = (double) (end - begin) / CLOCKS_PER_SEC;
+            begin = clock();
+            for (t = 0; t < test_cases; t++) {
+                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name,
+                                                            name_len, &cpk, topic_index, N, m));
+            }
+            end = clock();
+            double verify_time = (double) (end - begin) / CLOCKS_PER_SEC;
+            free(proof);
+            N *= rctx.n;
+            printf("%d, %d, %d, %f, %f, %d\n", N, m, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m),
+                   proving_time / test_cases, verify_time / test_cases, topic_size);
+        }
+        secp256k1_ringcip_DBPoE_context_clear(&rctx);
+    }
 }
 
 

@@ -333,15 +333,10 @@ int main(int argc, char **argv) {
     test_boquila_bench();
     test_boquila_3_bench();
     test_boquila_DBPoE_bench();
+    test_boquila_DBPoE_topic_bench();
 
     printf("passed ringcip tests!\n");
 
-
-    /*bench_nopeni_split_t(0, 2);
-    bench_nopeni_split_t(1, 2);
-    bench_nopeni_split_t(1, 3);
-    bench_nopeni_split_t(1, 4);*/
-    //test_ringcip();
 
 #ifdef  DO_OTHER_TESTS
 
