@@ -195,8 +195,8 @@ async function proveMem(msk, group, serviceName, challenge) {
 async function verifyMem(proof, group, serviceName, challenge) {
     const isValid = await verifyProof(proof);
     const checkRoot = proof.merkleTreeRoot === group.root.toString();
-    const checkMessage = proof.message === convertMessage(challenge).toString();
-    const checkScope = proof.scope === convertMessage(serviceName).toString();
+    //const checkMessage = proof.message === convertMessage(challenge).toString();
+    //const checkScope = proof.scope === convertMessage(serviceName).toString();
     return isValid && checkRoot && checkMessage && checkScope;
 }
 
