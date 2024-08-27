@@ -9,6 +9,8 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   submodules: "recursive"
+            #sudo apt-get install build-essential cmake libgmp-dev libsodium-dev nasm curl m4
+            #sudo apt-get install nlohmann-json3-dev
             - name: install requirements
               uses: awalsh128/cache-apt-pkgs-action@v1
               with:

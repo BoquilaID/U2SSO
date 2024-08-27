@@ -75,6 +75,7 @@ async function deriveWebKey(msk, name) {
     return wpk;
 }
 
+
 function deriveChildSecretKey(msk, name, count) {
     const convertedName = convertMessage(name);
     const csk = poseidon3([msk[1], convertedName, count]);
@@ -102,7 +103,7 @@ async function deriveChildPublicKey(csk) {
 
 async function ProveMPKMemb(sk, group, message) {
     const identity = new Identity(sk);
-    const scope = "Boquila";
+    const scope = "1234";
     const proof = await generateProof(identity, group, message, scope);
     return proof;
 }
@@ -151,6 +152,54 @@ async function VerifyReplacedCPK(proof) {
     return isValid;
 }
 
+function createScope(challenge, spk, serviceName) {
+    try {
+        return toBigInt(message);
+    } catch (e) {
+        return toBigInt(encodeBytes32String(message));
+    }
+}
+
+async function createID(msk) {
+    const identity = new Identity(msk);
+    return identity;
+}
+
+
+async function createSPK(msk, serviceName) {
+    const convertedName = convertMessage(serviceName);
+    const csk = poseidon3([msk[1], convertedName, 100]);
+    const spk = new Identity(csk.toString());
+    return spk;
+}
+
+async function authProof(msk, challenge, serviceName) {
+    const convertedName = convertMessage(serviceName);
+    const csk = poseidon3([msk[1], convertedName, 100]);
+    const spk = new Identity(csk.toString());
+    const signature = spk.signMessage(challenge);
+    return signature;
+}
+
+async function authVerify(spk, signature, challenge) {
+    const val = Identity.verifySignature(challenge, signature, spk.publicKey);
+    return val;
+}
+
+async function proveMem(msk, group, serviceName, challenge) {
+    const identity = new Identity(msk);
+    const proof = await generateProof(identity, group, challenge, serviceName);
+    return proof;
+}
+
+async function verifyMem(proof, group, serviceName, challenge) {
+    const isValid = await verifyProof(proof);
+    const checkRoot = proof.merkleTreeRoot === group.root.toString();
+    const checkMessage = proof.message === convertMessage(challenge).toString();
+    const checkScope = proof.scope === convertMessage(serviceName).toString();
+    return isValid && checkRoot && checkMessage && checkScope;
+}
+
 exports.genMasterPk = genMasterPk;
 exports.deriveWebKey = deriveWebKey;
 exports.deriveChildSecretKey = deriveChildSecretKey;
@@ -159,3 +208,9 @@ exports.ProveMPKMemb = ProveMPKMemb;
 exports.VerifyMPKMemb = VerifyMPKMemb;
 exports.ReplaceCPK = ReplaceCPK;
 exports.VerifyReplacedCPK = VerifyReplacedCPK;
+exports.createID = createID
+exports.createSPK = createSPK
+exports.authProof = authProof
+exports.authVerify = authVerify
+exports.proveMem = proveMem
+exports.verifyMem = verifyMem

@@ -15,16 +15,77 @@ const {
     VerifyReplacedCPK,
     ProveMPKMemb,
     VerifyMPKMemb,
+    createID,
+    createSPK,
+    authProof,
+    authVerify,
+    proveMem,
+    verifyMem,
 } = require("../src");
+const { channel } = require("diagnostics_channel");
 
 describe("Boquila", function () {
     this.timeout(200000);
 
-    describe("#genMasterPk", function () {
-        it("should generate master public key", async function () {
+    describe("Verifying auth proofs", function () {
+        it("should generate valid signatures", async function () {
             const msk = "123";
-            const mpk = await genMasterPk(msk);
-            assert.equal(mpk.length, 2);
+            const id = await createID(msk);
+            const message = "Hello World"
+            const signature = id.signMessage(message)
+            assert.equal(true, Identity.verifySignature(message, signature, id.publicKey));
+        });
+    });
+
+    describe("Verifying auth proofs for service keys", function () {
+        it("should generate valid signatures", async function () {
+            const msk = "123";
+            const id = await createID(msk);
+            const challenge = "Hello World";
+            const serviceName = "abc_service";
+            const spk = await createSPK(msk, serviceName)
+            const signature = spk.signMessage(challenge)
+            assert.equal(true, Identity.verifySignature(challenge, signature, spk.publicKey));
+        });
+    });
+
+    describe("Verifying auth proofs for service keys", function () {
+        it("should generate valid signatures", async function () {
+            const msk = "123";
+            const id = await createID(msk);
+            const challenge = "Hello World";
+            const serviceName = "abc_service";
+            const spk = await createSPK(msk, serviceName)
+            const signature = await authProof(msk, challenge, serviceName)
+            const val = await authVerify(spk, signature, challenge)
+            assert.equal(true, val);
+        });
+    });
+
+    describe("Verifying membership proofs", function () {
+        it("should generate valid proofs", async function () {
+            const msk1 = "1";
+            const id1 = await createID(msk1);
+            const msk2 = "2";
+            const id2 = await createID(msk2);
+            const msk3 = "3";
+            const id3 = await createID(msk3);
+            const msk4 = "4";
+            const id4 = await createID(msk4);
+            
+            const challenge = "1234";
+            const serviceName = "1234";
+            
+            const group = new Group([
+                id1.commitment, 
+                id2.commitment,
+                id3.commitment,
+                id4.commitment,
+            ]);
+
+            const proof = await proveMem(msk1, group, serviceName, challenge);
+            const val = await verifyMem(proof, group, serviceName, challenge);
+            assert.equal(true, val);
         });
     });
 
@@ -66,7 +127,7 @@ describe("Boquila", function () {
             const identity1 = new Identity(sk2);
             const identity2 = new Identity();
             const identity3 = new Identity();
-            const message = "message";
+            const message = "1234";
 
             const group = new Group([
                 identity.commitment, // user
