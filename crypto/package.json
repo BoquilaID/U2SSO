@@ -10,9 +10,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@semaphore-protocol/group": "^4.0.0-beta.12",
-        "@semaphore-protocol/identity": "^4.0.0-beta.12",
-        "@semaphore-protocol/proof": "^4.0.0-beta.12",
+        "@semaphore-protocol/group": "4.0.3",
+        "@semaphore-protocol/identity": "4.0.3",
+        "@semaphore-protocol/proof": "4.0.3",
         "@zk-kit/binary-merkle-root.circom": "^1.0.0",
         "@zk-kit/eddsa-poseidon": "^1.0.2",
         "circomlib": "^2.0.5",
