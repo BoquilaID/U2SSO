@@ -8,25 +8,33 @@ pragma solidity ^0.8.13;
 
 contract U2SSO {
 	struct ID {
-		uint256 id;
-		uint id33;
-		bool active;
-	}
+        uint256 id;
+        uint id33;
+        bool active;
+        address owner;
+    }
 
-	ID[] public idList;
+    address private _owner;
+    constructor() {
+        _owner = msg.sender;
+    }
 
-	uint nextIndex;
+    ID[] public idList;
 
-	function addID (uint256 _id, uint _id33) public returns (uint) {
-		idList.push(ID(_id, _id33, true));
-		nextIndex = nextIndex + 1;
-		return nextIndex - 1;
-	}
+    uint nextIndex;
 
-	function revokeID (uint _index) public {
-		ID storage id = idList[_index];
-		id.active = false;
-	}
+    function addID (uint256 _id, uint _id33) public returns (uint) {
+        idList.push(ID(_id, _id33, true, _owner));
+        nextIndex = nextIndex + 1;
+        return nextIndex - 1;
+    }
+
+    function revokeID (uint _index) public {
+        ID storage id = idList[_index];
+        if (_owner == id.owner) {
+            id.active = false;
+        }
+    }
 
 	function getIDs (uint _index) public view returns (uint256, uint) {
 		ID storage id = idList[_index];

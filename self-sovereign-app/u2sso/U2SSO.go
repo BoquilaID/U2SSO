@@ -31,7 +31,7 @@ var (
 
 // U2ssoMetaData contains all meta data concerning the U2sso contract.
 var U2ssoMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"addID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"getIDIndex\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getIDSize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getIDs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idList\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"id33\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"revokeID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"addID\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_id33\",\"type\":\"uint256\"}],\"name\":\"getIDIndex\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getIDSize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getIDs\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"idList\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"id33\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"revokeID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // U2ssoABI is the input ABI used to generate the binding from.
@@ -307,11 +307,12 @@ func (_U2sso *U2ssoCallerSession) GetState(_index *big.Int) (bool, error) {
 
 // IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active, address owner)
 func (_U2sso *U2ssoCaller) IdList(opts *bind.CallOpts, arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
+	Owner  common.Address
 }, error) {
 	var out []interface{}
 	err := _U2sso.contract.Call(opts, &out, "idList", arg0)
@@ -320,6 +321,7 @@ func (_U2sso *U2ssoCaller) IdList(opts *bind.CallOpts, arg0 *big.Int) (struct {
 		Id     *big.Int
 		Id33   *big.Int
 		Active bool
+		Owner  common.Address
 	})
 	if err != nil {
 		return *outstruct, err
@@ -328,6 +330,7 @@ func (_U2sso *U2ssoCaller) IdList(opts *bind.CallOpts, arg0 *big.Int) (struct {
 	outstruct.Id = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 	outstruct.Id33 = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
 	outstruct.Active = *abi.ConvertType(out[2], new(bool)).(*bool)
+	outstruct.Owner = *abi.ConvertType(out[3], new(common.Address)).(*common.Address)
 
 	return *outstruct, err
 
@@ -335,22 +338,24 @@ func (_U2sso *U2ssoCaller) IdList(opts *bind.CallOpts, arg0 *big.Int) (struct {
 
 // IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active, address owner)
 func (_U2sso *U2ssoSession) IdList(arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
+	Owner  common.Address
 }, error) {
 	return _U2sso.Contract.IdList(&_U2sso.CallOpts, arg0)
 }
 
 // IdList is a free data retrieval call binding the contract method 0x6313531f.
 //
-// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active)
+// Solidity: function idList(uint256 ) view returns(uint256 id, uint256 id33, bool active, address owner)
 func (_U2sso *U2ssoCallerSession) IdList(arg0 *big.Int) (struct {
 	Id     *big.Int
 	Id33   *big.Int
 	Active bool
+	Owner  common.Address
 }, error) {
 	return _U2sso.Contract.IdList(&_U2sso.CallOpts, arg0)
 }
