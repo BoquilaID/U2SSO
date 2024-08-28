@@ -152,13 +152,6 @@ async function VerifyReplacedCPK(proof) {
     return isValid;
 }
 
-function createScope(challenge, spk, serviceName) {
-    try {
-        return toBigInt(message);
-    } catch (e) {
-        return toBigInt(encodeBytes32String(message));
-    }
-}
 
 async function createID(msk) {
     const identity = new Identity(msk);
@@ -192,12 +185,24 @@ async function proveMem(msk, group, serviceName, challenge) {
     return proof;
 }
 
+async function getNullifier(proof) {
+    return proof.nullifier;
+}
+
 async function verifyMem(proof, group, serviceName, challenge) {
     const isValid = await verifyProof(proof);
-    //const checkRoot = proof.merkleTreeRoot === group.root.toString();
-    //const checkMessage = proof.message === convertMessage(challenge).toString();
-    //const checkScope = proof.scope === convertMessage(serviceName).toString();
-    return isValid;
+    const checkRoot = proof.merkleTreeRoot === group.root.toString();
+    const checkMessage = proof.message === convertMessage(challenge).toString();
+    const checkScope = proof.scope === convertMessage(serviceName).toString();
+    return isValid && checkRoot && checkMessage && checkScope;
+}
+
+async function verifyMemWithNullifier(proof, group, serviceName, challenge) {
+    const isValid = await verifyProof(proof);
+    const checkRoot = proof.merkleTreeRoot === group.root.toString();
+    const checkMessage = proof.message === convertMessage(challenge).toString();
+    const checkScope = proof.scope === convertMessage(serviceName).toString();
+    return isValid && checkRoot && checkMessage && checkScope;
 }
 
 exports.genMasterPk = genMasterPk;
@@ -214,3 +219,4 @@ exports.authProof = authProof
 exports.authVerify = authVerify
 exports.proveMem = proveMem
 exports.verifyMem = verifyMem
+exports.getNullifier = getNullifier

@@ -21,8 +21,10 @@ const {
     authVerify,
     proveMem,
     verifyMem,
+    getNullifier,
 } = require("../src");
 const { channel } = require("diagnostics_channel");
+const {stringify} = require("mocha/lib/utils");
 
 describe("Boquila", function () {
     this.timeout(200000);
@@ -89,6 +91,45 @@ describe("Boquila", function () {
         });
     });
 
+    describe("Verifying the consistency of the nullifier", function () {
+        it("Should output the same nullifier even with 2 different groups", async function () {
+            const msk1 = "1";
+            const id1 = await createID(msk1);
+            const msk2 = "2";
+            const id2 = await createID(msk2);
+            const msk3 = "3";
+            const id3 = await createID(msk3);
+            const msk4 = "4";
+            const id4 = await createID(msk4);
+
+            const challenge = "1234";
+            const serviceName = "1234";
+
+            const group1 = new Group([
+                id1.commitment,
+                id2.commitment,
+                id3.commitment,
+                id4.commitment,
+            ]);
+
+            const group2 = new Group([
+                id1.commitment,
+                id2.commitment,
+                id3.commitment,
+            ]);
+
+            const proof1 = await proveMem(msk1, group1, serviceName, challenge);
+            const proof2 = await proveMem(msk1, group2, serviceName, challenge);
+            const val1 = await verifyMem(proof1, group1, serviceName, challenge);
+            const val2 = await verifyMem(proof2, group2, serviceName, challenge);
+            const nul1 = getNullifier(proof1);
+            const nul2 = getNullifier(proof2);
+            assert.equal(true, val1);
+            assert.equal(true, val2);
+            assert.equal(nul1.toString(), nul2.toString());
+        });
+    });
+
     describe("#deriveWebKeys", function () {
         it("should derive web key", async function () {
             const msk = "123";
@@ -145,58 +186,41 @@ describe("Boquila", function () {
         });
     });
 
-    // describe("#ReplaceCPK/VerifyReplacedCPK", function () {
-    //     it("should prove and verify CPK", async function () {
-    //         const masterSecretKey =
-    //             "0001020304050607080900010203040506070809000102030405060708090001";
+    describe("Proving time and verification time for membership proofs", function () {
+        it("should generate valid proofs", async function () {
+            const testcases = 20;
+            let provingTime = 0;
+            let verificationTime = 0;
+            let proofSize = 0;
+            for(let groupSize = 8; groupSize <= 1024; groupSize = groupSize*2) {
+                let group = new Group([]);
+                let identities = [];
+                let msks = [];
+                for (let j = 0; j < groupSize; j++) {
+                    msks[j] = stringify(j);
+                    identities[j] = await createID(msks[j]);
+                    group.addMember(identities[j].commitment)
+                }
 
-    //         const webName = "111";
-    //         const i = 0;
-    //         const iPlusOne = 1;
+                const challenge = "1234";
+                const serviceName = "1234";
+                const startP = new Date().getTime();
+                let proof;
+                for (let i = 0; i < testcases; i++) {
+                    proof = await proveMem(msks[0], group, serviceName, challenge);
+                }
+                const endP = new Date().getTime();
+                const startV = new Date().getTime();
+                let val;
+                for (let i = 0; i < testcases; i++) {
+                    val = await verifyMem(proof, group, serviceName, challenge);
+                }
+                const endV = new Date().getTime();
+                assert.equal(true, val);
+                proofSize = 256; // todo: compute the proof size?
+                console.log("%d, %d, %d, %d", proofSize, groupSize, (endP - startP)/testcases, (endV - startV)/testcases)
+            }
+        });
+    });
 
-    //         // child keys
-    //         const childSecretKeyi = poseidon3([masterSecretKey, webName, i]);
-    //         const childSecretKeyiPlusOne = poseidon3([
-    //             masterSecretKey,
-    //             webName,
-    //             iPlusOne,
-    //         ]);
-    //         const privKeyi = Buffer.from(childSecretKeyi.toString());
-    //         const privKeyiPlusOne = Buffer.from(
-    //             childSecretKeyiPlusOne.toString()
-    //         );
-
-    //         // public keys
-    //         const pubKeyi = derivePublicKey(privKeyi);
-    //         const pubKeyiPlusOne = derivePublicKey(privKeyiPlusOne);
-    //         const proof = await ReplaceCPK(
-    //             masterSecretKey,
-    //             webName,
-    //             i,
-    //             iPlusOne
-    //         );
-
-    //         // check public keys
-    //         assert.equal(
-    //             pubKeyi[0].toString(),
-    //             proof.publicSignals[0].toString()
-    //         );
-    //         assert.equal(
-    //             pubKeyi[1].toString(),
-    //             proof.publicSignals[1].toString()
-    //         );
-    //         assert.equal(
-    //             pubKeyiPlusOne[0].toString(),
-    //             proof.publicSignals[2].toString()
-    //         );
-    //         assert.equal(
-    //             pubKeyiPlusOne[1].toString(),
-    //             proof.publicSignals[3].toString()
-    //         );
-
-    //         // check proof
-    //         const isValid = await VerifyReplacedCPK(proof);
-    //         assert.equal(isValid, true);
-    //     });
-    // });
 });
