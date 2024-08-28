@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for ((j=1; j<=10; j++))
+for ((j=1; j<=3; j++))
 do
     ./tests
 done
