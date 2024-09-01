@@ -22,7 +22,7 @@ First run the Ganache application. The Ganache application is usually an executa
 
 Now, Go to the `u2ssoContract` directory and run the following commands:
 
-Deploy the contract in `u2ssoContract` folder:
+Go to `u2ssoContract` directory and deploy the contract:
 ``truffle compile``
 ``truffle test``
 ``truffle deploy``
@@ -38,7 +38,7 @@ First run the server with the contract address:
 ``go build server.go``
 ``./server -contract 0xFf9e0936C2d65D66E9e66d3b1467982C9bfA0e45``
 
-Open the webpage in:
+Open the webpage in a browser by visiting:
 
 ``http://localhost:8080/``
 
