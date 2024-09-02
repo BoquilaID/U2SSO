@@ -7,13 +7,16 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
 	u2sso "main/u2sso"
 	"math/big"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // #cgo CFLAGS: -g -Wall
@@ -124,47 +127,59 @@ func main() {
 }
 
 func signupFormHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "ParseForm() err: %v", err)
-		return
-	}
+	// Generate dynamic content
 	challenge := u2sso.CreateChallenge()
 	acc := newAccount(challenge, userIP(r))
 	registeredSPK = append(registeredSPK, acc)
+
 	sha := sha256.New()
 	sha.Write([]byte(sname))
 	serviceName := hex.EncodeToString(sha.Sum(nil))
+
+	// Read signup.html file
+	htmlFilePath := "./static/signup.html"
+	htmlContent, err := os.ReadFile(htmlFilePath)
+	if err != nil {
+		http.Error(w, "Could not load signup page", http.StatusInternalServerError)
+		return
+	}
+
+	// Replace placeholders with dynamic content
+	htmlContentStr := string(htmlContent)
+	htmlContentStr = strings.Replace(htmlContentStr, "{{CHALLENGE}}", hex.EncodeToString(challenge), -1)
+	htmlContentStr = strings.Replace(htmlContentStr, "{{SERVICE_NAME}}", serviceName, -1)
+
+	// Serve the updated HTML
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprintf(w, Header)
-	fmt.Fprintf(w, "<h1>Sign up</h1><br>")
-	fmt.Fprintf(w, "use challenge: <b>%s</b><br>\n", hex.EncodeToString(challenge))
-	fmt.Fprintf(w, "use service name: <b>%s</b><br>\n", serviceName)
-	fmt.Fprint(w, "<form method=\"POST\" action=\"/signup\">\n ")
-	fmt.Fprintf(w, "<label>Challenge </label><input name=\"challenge\" type=\"text\" value=\"%s\" /><br>", hex.EncodeToString(challenge))
-	fmt.Fprintf(w, "<label>Service Name </label><input name=\"sname\" type=\"text\" value=\"%s\"/><br>\n", serviceName)
-	fmt.Fprint(w, SignupForm)
+	fmt.Fprint(w, htmlContentStr)
 }
 
 func loginFormHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "ParseForm() err: %v", err)
-		return
-	}
+	// Generate dynamic content
 	challenge := u2sso.CreateChallenge()
 	au := newAuthChallenges(challenge, userIP(r))
 	regAuthChallenges = append(regAuthChallenges, au)
+
 	sha := sha256.New()
 	sha.Write([]byte(sname))
 	serviceName := hex.EncodeToString(sha.Sum(nil))
+
+	// Read login.html file
+	htmlFilePath := "./static/login.html"
+	htmlContent, err := os.ReadFile(htmlFilePath)
+	if err != nil {
+		http.Error(w, "Could not load login page", http.StatusInternalServerError)
+		return
+	}
+
+	// Replace placeholders with dynamic content
+	htmlContentStr := string(htmlContent)
+	htmlContentStr = strings.Replace(htmlContentStr, "{{CHALLENGE}}", hex.EncodeToString(challenge), -1)
+	htmlContentStr = strings.Replace(htmlContentStr, "{{SERVICE_NAME}}", serviceName, -1)
+
+	// Serve the updated HTML
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprintf(w, Header)
-	fmt.Fprintf(w, "<h1>Log in</h1><br>")
-	fmt.Fprintf(w, "use challenge: <b>%s</b><br>\n", hex.EncodeToString(challenge))
-	fmt.Fprintf(w, "use service name: <b>%s</b><br>\n", serviceName)
-	fmt.Fprint(w, "<form method=\"POST\" action=\"/login\">\n ")
-	fmt.Fprintf(w, "<label>Challenge </label><input name=\"challenge\" type=\"text\" value=\"%s\"/><br>\n", hex.EncodeToString(challenge))
-	fmt.Fprintf(w, "<label>Service Name </label><input name=\"sname\" type=\"text\" value=\"%s\"/><br>\n", serviceName)
-	fmt.Fprint(w, LoginForm)
+	fmt.Fprint(w, htmlContentStr)
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -223,10 +238,31 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 				registeredSPK[i].registered = true
 			}
 		}
-		fmt.Fprintf(w, "<b>Welcome %s! <b><br>\n", name)
-		fmt.Fprintf(w, "Registeration passed\n")
+		// Load the registration_success.html file
+		htmlFilePath := "./static/registration_success.html"
+		htmlContent, err := os.ReadFile(htmlFilePath)
+		if err != nil {
+			http.Error(w, "Could not load registration success page", http.StatusInternalServerError)
+			return
+		}
+
+		// Replace {{NAME}} with the actual user's name
+		htmlContentStr := strings.Replace(string(htmlContent), "{{NAME}}", name, -1)
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, htmlContentStr)
 	} else {
-		fmt.Fprintf(w, "Sign up request failed\n")
+		// Load the registration_fail.html file
+		htmlFilePath := "./static/registration_fail.html"
+		htmlContent, err := os.ReadFile(htmlFilePath)
+		if err != nil {
+			http.Error(w, "Could not load registration fail page", http.StatusInternalServerError)
+			return
+		}
+
+		// Serve the registration fail page
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, string(htmlContent))
 	}
 }
 
@@ -268,10 +304,34 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if res && res2 {
-		fmt.Fprintf(w, "<b>Welcome %s! <b><br>\n", name)
-		fmt.Fprintf(w, "log in request successful\n")
+		// fmt.Fprintf(w, "<b>Welcome %s! <b><br>\n", name)
+		// fmt.Fprintf(w, "log in request successful\n")
+
+		// Load the registration_success.html file
+		htmlFilePath := "./static/login_success.html"
+		htmlContent, err := os.ReadFile(htmlFilePath)
+		if err != nil {
+			http.Error(w, "Could not load login success page", http.StatusInternalServerError)
+			return
+		}
+
+		// Replace {{NAME}} with the actual user's name
+		htmlContentStr := strings.Replace(string(htmlContent), "{{NAME}}", name, -1)
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, htmlContentStr)
 	} else {
-		fmt.Fprintf(w, "log in request fail\n")
+		// Load the registration_fail.html file
+		htmlFilePath := "./static/login_fail.html"
+		htmlContent, err := os.ReadFile(htmlFilePath)
+		if err != nil {
+			http.Error(w, "Could not load login fail page", http.StatusInternalServerError)
+			return
+		}
+
+		// Serve the registration fail page
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, string(htmlContent))
 	}
 }
 
