@@ -3,7 +3,7 @@ name: Build and Test
 on: [push, pull_request]
 
 jobs:
-    crypto:
+    snark:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -18,17 +18,17 @@ jobs:
                   version: 1.0
             - name: download rapidsnark
               run: |
-                  cd crypto
+                  cd crypto-snark
                   git clone https://github.com/vivianjeng/rapidsnark.git
             - name: build gmp for Linux x86_64
               run: |
-                  cd crypto/rapidsnark
+                  cd crypto-snark/rapidsnark
                   git submodule init
                   git submodule update
                   if [[ ! -d "depends/gmp/package" ]]; then ./build_gmp.sh host; fi
             - name: Build prover Linux
               run: |
-                  cd crypto/rapidsnark
+                  cd crypto-snark/rapidsnark
                   mkdir -p build_prover && cd build_prover
                   cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../package
                   make -j4 && make install
@@ -44,15 +44,15 @@ jobs:
             #   run: npm install -g snarkjs
             - name: Install dependencies
               run: |
-                  cd crypto
+                  cd crypto-snark
                   npm install
             - name: Build circuits
               run: |
-                  cd crypto
+                  cd crypto-snark
                   ./scripts/benchmark.sh
             - name: Run tests
               run: |
-                  cd crypto
+                  cd crypto-snark
                   npm test
     ddh:
         runs-on: ubuntu-latest
@@ -60,15 +60,15 @@ jobs:
             - uses: actions/checkout@v4
             - name: Build
               run: |
-                  cd crypto-ddh
+                  cd crypto-dbpoe
                   ./autogen.sh
                   ./configure
                   make
             - name: Test
               run: |
-                  cd crypto-ddh
+                  cd crypto-dbpoe
                   ./tests
             - name: Run benchmark
               run: |
-                  cd crypto-ddh
+                  cd crypto-dbpoe
                   ./benchmark.sh
