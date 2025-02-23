@@ -376,7 +376,7 @@ int secp256k1_boquila_prove_DBPoE_memmpk(
         uint8_t *nullifier,
         pk_t *mpks,
         const uint8_t* msk,
-        const uint8_t* W,
+        //const uint8_t* W,
         const uint8_t* name,
         int name_len,
         pk_t * spk,
@@ -412,7 +412,7 @@ int secp256k1_boquila_prove_DBPoE_memmpk(
     // challenge
     secp256k1_sha256_initialize(&sha);
     secp256k1_sha256_write(&sha, spk->buf, 33);
-    secp256k1_sha256_write(&sha, W, 32);
+    //secp256k1_sha256_write(&sha, W, 32);
     secp256k1_sha256_write(&sha, name, name_len);
     secp256k1_sha256_finalize(&sha, chalBuf);
 
@@ -461,7 +461,7 @@ int secp256k1_boquila_verify_DBPoE_memmpk(
         uint8_t *proof,
         uint8_t *nullifier,
         pk_t *mpks,
-        const uint8_t* W,
+        //const uint8_t* W,
         const uint8_t* name,
         int name_len,
         pk_t * spk,
@@ -498,7 +498,7 @@ int secp256k1_boquila_verify_DBPoE_memmpk(
     // challenge
     secp256k1_sha256_initialize(&sha);
     secp256k1_sha256_write(&sha, spk->buf, 33);
-    secp256k1_sha256_write(&sha, W, 32);
+    //secp256k1_sha256_write(&sha, W, 32);
     secp256k1_sha256_write(&sha, name, name_len);
     secp256k1_sha256_finalize(&sha, chalBuf);
 

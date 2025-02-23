@@ -354,7 +354,6 @@ int test_boquila_DBPoE_bench(void) {
         CHECK(rctx.N == 1024); // 8, 16,
 
         pk_t mpk;
-        pk_t wpk;
         pk_t cpk;
         uint8_t csk[32];
         uint8_t csk1[32];
@@ -385,14 +384,14 @@ int test_boquila_DBPoE_bench(void) {
             uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
             clock_t begin = clock();
             for (t = 0; t < test_cases; t++) {
-                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name,
+                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], name,
                                                            name_len, &cpk, j, topic_index, N, m));
             }
             clock_t end = clock();
             double proving_time = (double) (end - begin) / CLOCKS_PER_SEC;
             begin = clock();
             for (t = 0; t < test_cases; t++) {
-                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name,
+                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, name,
                                                             name_len, &cpk, topic_index, N, m));
             }
             end = clock();
@@ -431,7 +430,6 @@ int test_boquila_DBPoE_topic_bench(void) {
         CHECK(rctx.N == 729); // 8, 16,
 
         pk_t mpk;
-        pk_t wpk;
         pk_t cpk;
         uint8_t csk[32];
         uint8_t csk1[32];
@@ -462,14 +460,14 @@ int test_boquila_DBPoE_topic_bench(void) {
             uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
             clock_t begin = clock();
             for (t = 0; t < test_cases; t++) {
-                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], chalregi, name,
+                CHECK(secp256k1_boquila_prove_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, msks[j], name,
                                                            name_len, &cpk, j, topic_index, N, m));
             }
             clock_t end = clock();
             double proving_time = (double) (end - begin) / CLOCKS_PER_SEC;
             begin = clock();
             for (t = 0; t < test_cases; t++) {
-                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, chalregi, name,
+                CHECK(secp256k1_boquila_verify_DBPoE_memmpk(ctx, &rctx, proof, nullifier, mpks, name,
                                                             name_len, &cpk, topic_index, N, m));
             }
             end = clock();
