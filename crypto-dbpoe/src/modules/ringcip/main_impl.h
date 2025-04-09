@@ -143,7 +143,6 @@ int secp256k1_boquila_derive_ssk(
     secp256k1_sha256_initialize(&sha);
     secp256k1_sha256_write(&sha, msk, 32);
     secp256k1_sha256_write(&sha, name, name_len);
-    secp256k1_sha256_write(&sha, &count, 4);
     secp256k1_sha256_finalize(&sha, csk);
 
     return 1;
