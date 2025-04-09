@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U2SSO Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/gilroy-web-font@1.0.0/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="login_styles.css">
+</head>
+
+<body>
+    <div class="content">
+        <div class="frosted-glass">
+            <div class="inner-content">
+                <h1>Log in to U2SSO</h1>
+                <!-- Use readonly input fields to display the values -->
+                <div class="form-group">
+                    <label>Use challenge:</label>
+                    <input type="text" value="{{CHALLENGE}}" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Use service name:</label>
+                    <input type="text" value="{{SERVICE_NAME}}" readonly />
+                </div>
+                <form method="POST" action="/login">
+                    <input type="hidden" name="challenge" value="{{CHALLENGE}}" />
+                    <input type="hidden" name="sname" value="{{SERVICE_NAME}}" />
+                    <label>User name</label><input name="name" type="text" value="" />
+                    <label>Public key for the account</label><input name="spk" type="text" value="" />
+                    <label>Digital Signature</label><input name="signature" type="text" value="" />
+                    <input type="submit" class="btn" value="Login!" />
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
