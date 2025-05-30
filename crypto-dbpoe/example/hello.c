@@ -61,7 +61,7 @@ int main() {
         printf("csk creation failed");
     }
     if (secp256k1_boquila_derive_spk(ctx, &rctx, &spk, ssk) == 0) {
-        printf("wpk creation failed");
+        printf("cpk creation failed");
     }
 
     int N = 8;
