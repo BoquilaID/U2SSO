@@ -262,6 +262,20 @@ SECP256K1_API  ringcip_context secp256k1_ringcip_context_create(
         secp256k1_generator *blind_gen)
 SECP256K1_ARG_NONNULL(1);
 
+/*
+* Create the context object
+* @param ctx - main context
+* @param L -  range bit
+* @param n -
+* @param m -
+* @param gen_seed - generate seed
+* @return ring cip context
+*/
+SECP256K1_API ringcip_DBPoE_context secp256k1_ringcip_DBPoE_context_create(
+        const secp256k1_context* ctx,
+        int L, int n, int m, uint8_t *gen_seed, uint8_t * topics, int topic_size)
+SECP256K1_ARG_NONNULL(1);
+
 /**
  * Clear the ring cip context
  * @param ctx - main context
@@ -277,7 +291,12 @@ SECP256K1_ARG_NONNULL(1);
  */
 SECP256K1_API  int secp256k1_zero_mcom_get_size(const ringcip_context *rctx, int m);
 
-
+/**
+ * Clear the ring cip context
+ * @param ctx - main context
+ * @param rctx - ring cip context
+ */
+SECP256K1_API int secp256k1_zero_mcom_DBPoE_get_size(const ringcip_DBPoE_context *rctx, int m);
 
 # ifdef __cplusplus
 }
