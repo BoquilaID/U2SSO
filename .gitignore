@@ -1,2 +1,40 @@
 .DS_Store
 */.DS_Store
+.vscode
+
+
+*.o
+*.la
+*.pc
+*.m4
+*.log
+*.dylib
+*.a
+*.lai
+*.in*
+*.Plo
+*.Po
+*.lo
+
+# Dirs
+*/build-aux
+*.deps
+
+bench_*
+config*
+output*
+trace*
+exhaustive*
+
+# Exec lib
+*gen_context
+*libtool
+*tests
+*requests
+*.dirstamp
+*stamp-h1
+
+
+# Exec
+*server
+*clientapp

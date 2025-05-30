@@ -5,14 +5,15 @@ import (
 	"crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"io"
 	"log"
 	"math/big"
 	"os"
 	"unsafe"
+
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // #cgo CFLAGS: -g -Wall
@@ -173,7 +174,7 @@ func RegistrationProof(index int, currentm int, currentN int, serviceName []byte
 	proof := make([]C.uint8_t, proofLen)
 	proofPtr := (*C.uint8_t)(unsafe.Pointer(&proof[0]))
 
-	if int(C.secp256k1_boquila_prove_memmpk(ctx, &rctx, proofPtr, mpksPtr, mskPtr,
+	if int(C.secp256k1_boquila_prove_memmpk(ctx, &rctx, proofPtr, mpksPtr, mskPtr, chalPtr,
 		namePtr, name_len, &spk, C.int(index), C.int(currentN), C.int(currentm))) == 0 {
 		fmt.Println("proving membership failed")
 		return "", nil, false
@@ -191,7 +192,7 @@ func RegistrationProof(index int, currentm int, currentN int, serviceName []byte
 		proof[i] = C.uint8_t(proofHexConverted[i])
 	}
 
-	if int(C.secp256k1_boquila_verify_memmpk(ctx, &rctx, proofPtr, mpksPtr,
+	if int(C.secp256k1_boquila_verify_memmpk(ctx, &rctx, proofPtr, mpksPtr, chalPtr,
 		namePtr, name_len, &spk, C.int(currentN), C.int(currentm))) == 0 {
 		fmt.Println("verifying membership failed")
 		return "", nil, false
@@ -250,7 +251,7 @@ func RegistrationVerify(proofHex string, currentm int, currentN int, serviceName
 		proof[i] = C.uint8_t(proofHexConverted[i])
 	}
 
-	if int(C.secp256k1_boquila_verify_memmpk(ctx, &rctx, proofPtr, mpksPtr,
+	if int(C.secp256k1_boquila_verify_memmpk(ctx, &rctx, proofPtr, mpksPtr, chalPtr,
 		namePtr, name_len, &spk, C.int(currentN), C.int(currentm))) == 0 {
 		fmt.Println("verifying membership failed")
 		return false

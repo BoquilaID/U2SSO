@@ -58,4 +58,4 @@ libsecp256k1 is built using autotools:
     $ ./configure
     $ make
     $ ./tests
-    $ sudo make install  # optional
+    $ sudo make install  # optional (needed for the go wrapper)

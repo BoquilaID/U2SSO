@@ -24,12 +24,6 @@ pk_t boquila_gen_mpk(boquila_ctx ctx, uint8_t *msk) {
     return mpk;
 }
 
-pk_t boquila_derive_webpk(boquila_ctx ctx, uint8_t *msk, uint8_t *name, int name_len) {
-    pk_t wpk;
-    secp256k1_boquila_derive_webpk(ctx.ctx, &ctx.rctx, &wpk, msk, name, name_len);
-    return wpk;
-}
-
 int main() {
     secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 

@@ -46,8 +46,6 @@ int test_boquila(void) {
 
     pk_t mpk;
     pk_t mpk1;
-    pk_t wpk;
-    pk_t wpk1;
     pk_t cpk;
     pk_t cpk1;
     uint8_t csk[32];
@@ -59,10 +57,6 @@ int test_boquila(void) {
     CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpk, msk));
     CHECK(secp256k1_boquila_gen_mpk(ctx, &rctx, &mpk1, msk));
     CHECK(equalarray(mpk.buf, mpk1.buf, 33));
-
-    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk, msk, name, name_len));
-    CHECK(secp256k1_boquila_derive_webpk(ctx, &rctx, &wpk1, msk, name, name_len));
-    CHECK(equalarray(wpk.buf, wpk1.buf, 33));
 
     uint8_t count[4] = {1, 0, 0, 0};
     CHECK(secp256k1_boquila_derive_ssk(ctx,  csk, msk, name, name_len));
@@ -216,7 +210,6 @@ int test_boquila_bench(void) {
     CHECK(rctx.N == 1024); // 8, 16,
 
     pk_t mpk;
-    pk_t wpk;
     pk_t cpk;
     uint8_t csk[32];
     uint8_t csk1[32];
@@ -282,8 +275,6 @@ int test_boquila_3_bench(void) {
 
     pk_t mpk;
     pk_t mpk1;
-    pk_t wpk;
-    pk_t wpk1;
     pk_t cpk;
     pk_t cpk1;
     uint8_t csk[32];

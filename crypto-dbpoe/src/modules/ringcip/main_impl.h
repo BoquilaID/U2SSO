@@ -139,7 +139,6 @@ int secp256k1_boquila_derive_ssk(
     secp256k1_scalar scalarb;
     secp256k1_sha256 sha;
 
-    // wpk := h^{msk_a}g^{\mathsf{Hash}(msk_b, name)}
     secp256k1_sha256_initialize(&sha);
     secp256k1_sha256_write(&sha, msk, 32);
     secp256k1_sha256_write(&sha, name, name_len);
@@ -213,61 +212,6 @@ int secp256k1_boquila_derive_DBPoE_spk(
     return 1;
 }
 
-int secp256k1_boquila_derive_webpk(
-        const secp256k1_context* ctx,
-        const ringcip_context* rctx,
-        pk_t* wpk,
-        const uint8_t* msk,
-        const uint8_t* name,
-        int name_len) {
-    ARG_CHECK(ctx != NULL);
-    ARG_CHECK(rctx != NULL);
-    ARG_CHECK(wpk != NULL);
-    ARG_CHECK(msk != NULL);
-    ARG_CHECK(name != NULL);
-    ARG_CHECK(name_len != 0);
-
-    int overflow;
-    secp256k1_ge tmpG;
-    secp256k1_ge tmpH;
-    secp256k1_ge tmp;
-    secp256k1_gej tmpGj;
-    secp256k1_scalar scalartmp;
-    secp256k1_scalar scalara;
-    secp256k1_scalar scalarb;
-    secp256k1_sha256 sha;
-    uint8_t buf[32];
-
-    /* g, mu */
-    secp256k1_generator_load(&tmpG, &rctx->geng);
-    secp256k1_generator_load(&tmpH, &rctx->genh);
-
-    secp256k1_scalar_set_b32(&scalartmp, msk, &overflow);
-    if (overflow) {
-        return 0;
-    }
-    secp256k1_scalar_negate(&scalara, &scalartmp);
-
-    // wpk := h^{msk_a}g^{\mathsf{Hash}(msk_b, name)}
-    secp256k1_sha256_initialize(&sha);
-    secp256k1_sha256_write(&sha, msk + 32, 32);
-    secp256k1_sha256_write(&sha, name, name_len);
-    secp256k1_sha256_finalize(&sha, buf);
-    secp256k1_scalar_set_b32(&scalarb, buf, NULL);
-
-    secp256k1_pedersen_blind_ecmult(&tmpGj, &scalara, &scalarb, &tmpG, &tmpH);
-    secp256k1_ge_set_gej(&tmp, &tmpGj);
-
-    // serialize
-    secp256k1_ge_save_boquila(wpk->buf, &tmp);
-
-    secp256k1_scalar_clear(&scalara);
-    secp256k1_scalar_clear(&scalarb);
-    secp256k1_scalar_clear(&scalartmp);
-
-    return 1;
-}
-
 int secp256k1_boquila_prove_memmpk(
         const secp256k1_context* ctx,
         const ringcip_context* rctx,
@@ -291,8 +235,8 @@ int secp256k1_boquila_prove_memmpk(
     secp256k1_ge tmpH;
     secp256k1_ge tmp;
     secp256k1_ge tmpg;
-    secp256k1_ge tmpwpk;
-    secp256k1_gej tmpwpkj;
+    // secp256k1_ge tmpwpk;
+    // secp256k1_gej tmpwpkj;
     secp256k1_gej tmpj;
     secp256k1_scalar scalara;
     secp256k1_sha256 sha;
@@ -341,8 +285,8 @@ int secp256k1_boquila_verify_memmpk(
     secp256k1_ge tmpH;
     secp256k1_ge tmp;
     secp256k1_ge tmpg;
-    secp256k1_ge tmpwpk;
-    secp256k1_gej tmpwpkj;
+    // secp256k1_ge tmpwpk;
+    // secp256k1_gej tmpwpkj;
     secp256k1_gej tmpj;
     secp256k1_scalar scalara;
     secp256k1_scalar scalarb;
@@ -395,7 +339,7 @@ int secp256k1_boquila_prove_DBPoE_memmpk(
     secp256k1_ge tmpH;
     secp256k1_ge tmp;
     secp256k1_ge tmpg;
-    secp256k1_gej tmpwpkj;
+    // secp256k1_gej tmpwpkj;
     secp256k1_gej tmpj;
     secp256k1_sha256 sha;
     secp256k1_scalar tmpsc;
@@ -436,10 +380,10 @@ int secp256k1_boquila_prove_DBPoE_memmpk(
 
     secp256k1_scalar_get_b32(nullifier, &vals[topic_index]);
     secp256k1_scalar_negate(&tmpsc, &vals[topic_index]);
-    secp256k1_ecmult_const(&tmpwpkj, &geng[topic_index], &tmpsc, 256);
+    // secp256k1_ecmult_const(&tmpwpkj, &geng[topic_index], &tmpsc, 256);
     for (int i = 0; i < N; i++) {
         secp256k1_ge_load_boquila(mpks[i].buf, &tmpg);
-        secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
+        // secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
         secp256k1_ge_set_gej(&tmp, &tmpj);
         secp256k1_ge_save_boquila(cints[i].buf, &tmp);
     }
@@ -477,8 +421,8 @@ int secp256k1_boquila_verify_DBPoE_memmpk(
     secp256k1_ge tmpH;
     secp256k1_ge tmp;
     secp256k1_ge tmpg;
-    secp256k1_ge tmpwpk;
-    secp256k1_gej tmpwpkj;
+    // secp256k1_ge tmpwpk;
+    // secp256k1_gej tmpwpkj;
     secp256k1_gej tmpj;
     secp256k1_scalar scalara;
     secp256k1_scalar scalarb;
@@ -503,10 +447,10 @@ int secp256k1_boquila_verify_DBPoE_memmpk(
 
     secp256k1_scalar_set_b32(&tmpsc, nullifier, &overflow);
     secp256k1_scalar_negate(&tmpsc, &tmpsc);
-    secp256k1_ecmult_const(&tmpwpkj, &geng[topic_index], &tmpsc, 256);
+    // secp256k1_ecmult_const(&tmpwpkj, &geng[topic_index], &tmpsc, 256);
     for (int i = 0; i < N; i++) {
         secp256k1_ge_load_boquila(mpks[i].buf, &tmpg);
-        secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
+        // secp256k1_gej_add_ge(&tmpj, &tmpwpkj, &tmpg);
         secp256k1_ge_set_gej(&tmp, &tmpj);
         secp256k1_ge_save_boquila(cints[i].buf, &tmp);
     }
