@@ -5225,10 +5225,7 @@ void run_ecdsa_openssl(void) {
 # include "modules/surjection/tests_impl.h"
 #endif
 
-# include "modules/nopenena/tests_impl.h"
-# include "modules/nopenena/zero_com_tests_impl.h"
 #include "modules/ringcip/tests_impl.h"
-#include "modules/nopenena/bench_nopenena.h"
 
 int main(int argc, char **argv) {
     unsigned char seed16[16] = {0};
@@ -5287,39 +5284,6 @@ int main(int argc, char **argv) {
         CHECK(secp256k1_context_randomize(ctx, secp256k1_rand_bits(1) ? run32 : NULL));
     }
 
-    //run_nopenena_tests();
-    //test_ringcip();
-
-/*    printf("Transaction details for varying anonymityset including decoys ===================\n");
-    int P[] = {2, 2, 2, 2, 2}; // change real account number for your bench values
-    int A[] = {4, 8, 16, 32, 64}; // change total account size for your bench values
-    bench_nopenena_api_allcombo_t(0, 2, P, A, 5);
-    //bench_nopenena_api_allcombo_t(1, 3, P, A, 5); // d=3
-    bench_nopenena_api_groupcombo_t(0, 2, P, A, 5);
-    //bench_nopenena_api_groupcombo_t(1, 3, P, A, 5); // d= 3
-
-    printf("Transaction details for varying actual accounts ===================\n");
-    int P1[] = {2, 4, 8}; // change real account number for your bench values
-    int A1[] = {16, 16, 16}; // change total account size for your bench values
-    bench_nopenena_api_allcombo_t(0, 2, P1, A1, 3);
-    bench_nopenena_api_allcombo_t(1, 3, P1, A1, 3);
-    bench_nopenena_api_groupcombo_t(0, 2, P1, A1, 3);
-    bench_nopenena_api_groupcombo_t(1, 3, P1, A1, 3);
-*/
-
-/*
-    printf("Contract Transaction details for varying accounts including decoys ===================\n");
-    bench_nopenena_contract_t(0, 2);
-    bench_nopenena_contract_t(1, 2);
-    bench_nopenena_contract_t(1, 3);
-    bench_nopenena_contract_t(1, 4);
-
-    printf("Split Transactions ===================\n");
-    bench_nopenena_split_t(0, 2);
-    bench_nopenena_split_t(1, 2);
-    bench_nopenena_split_t(1, 3);
-    bench_nopenena_split_t(1, 4);
-*/
     printf("Borromean details for varying anonymityset including decoys ===================\n");
     test_borromean_sig();
 

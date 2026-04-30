@@ -1,6 +1,14 @@
 libsecp256k1
 ============
 
+This is a fork of two libraries: 
+
+- https://github.com/bitcoin-core/secp256k1 
+
+- https://github.com/BlockstreamResearch/secp256k1-zkp 
+
+To which we added our own code to implement U2SSO. See mainly src/modules/ringcip .
+
 [![Build Status](https://travis-ci.org/mimblewimble/secp256k1-zkp.svg?branch=master)](https://travis-ci.org/mimblewimble/secp256k1-zkp)
 
 Optimized C library for EC operations on curve secp256k1.
