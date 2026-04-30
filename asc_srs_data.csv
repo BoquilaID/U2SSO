@@ -1,0 +1,9 @@
+scheme, proof_size(B), group_size, proving_time(ms), verifying_time(ms)
+ASC-SRS, 384, 8, 273, 10
+ASC-SRS, 384, 16, 289.1, 9.95
+ASC-SRS, 384, 32, 318.6, 10.05
+ASC-SRS, 384, 64, 318.1, 10.15
+ASC-SRS, 384, 128, 328, 9.6
+ASC-SRS, 384, 384, 340.65, 9.7
+ASC-SRS, 384, 512, 366.45, 9.75
+ASC-SRS, 384, 1024, 531.75, 12.1

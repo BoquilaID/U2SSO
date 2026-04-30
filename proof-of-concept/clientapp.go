@@ -62,10 +62,12 @@ func main() {
 	if clientFlag == "" {
 		fmt.Println("No client address was given. Taking default: http://127.0.0.1:7545")
 		clientFlag = "http://127.0.0.1:7545"
-		client, err = ethclient.Dial("http://127.0.0.1:7545")
-		if err != nil {
-			fmt.Println("Error connecting to eth client", err)
-		}
+	}
+
+	client, err = ethclient.Dial(clientFlag)
+	if err != nil {
+		fmt.Println("Error connecting to eth client", err)
+		return
 	}
 
 	if contractFlag == "" {

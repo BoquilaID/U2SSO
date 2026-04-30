@@ -217,7 +217,12 @@ describe("Boquila", function () {
                 }
                 const endV = new Date().getTime();
                 assert.equal(true, val);
-                proofSize = 256; // todo: compute the proof size?
+                // Groth16 proof points: each element is a BN254 field element (32 bytes)
+                const pointsSize = proof.points.length * 32;
+                // Public signals: all fields except 'points', each is a BN254 field element (32 bytes)
+                const publicSignals = Object.keys(proof).filter(k => k !== 'points' && k != 'merkleTreeDepth');
+                const publicSignalsSize = publicSignals.length * 32;
+                proofSize = pointsSize + publicSignalsSize;
                 console.log("%d, %d, %d, %d", proofSize, groupSize, (endP - startP)/testcases, (endV - startV)/testcases)
             }
         });

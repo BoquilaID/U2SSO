@@ -1,0 +1,11 @@
+scheme, proof_size(B), group_size, signing_time(ms), verifying_time(ms)
+DualDory, 8412, 2, 27, 17
+DualDory, 15548, 4, 44, 27
+DualDory, 22684, 8, 74, 38
+DualDory, 29820, 16, 140, 46
+DualDory, 36956, 32, 210, 79
+DualDory, 44092, 64, 34, 89
+DualDory, 51228, 128, 628, 86
+DualDory, 58364, 256, 1266, 102
+DualDory, 65500, 512, 2341, 99
+DualDory, 72637, 1024, 4639, 103
