@@ -522,4 +522,65 @@ void run_rangeproof_tests(void) {
     test_rangeproof();
 }
 
+static void test_borromean_sig(void) {
+    int asizes[] = {4, 8, 16, 32, 64, 129, 256, 512, 1024};
+
+    for (int trial = 0; trial < 9; trial++)
+    {
+        int asize = asizes[trial];
+        int asizelog = asize;
+        unsigned char e0[32];
+        secp256k1_scalar s[asize];
+        secp256k1_gej pubs[asize];
+        secp256k1_scalar k[asize];
+        secp256k1_scalar sec[asize];
+        secp256k1_ge ge;
+        secp256k1_scalar one;
+        unsigned char m[32];
+        size_t rsizes[1];
+        rsizes[0] = asize;
+        size_t secidx[1];
+        size_t nrings = 1;
+        size_t i;
+        size_t j;
+        int c;
+        secp256k1_rand256_test(m);
+        secidx[0] = secp256k1_rand32() % rsizes[0];
+        c = 0;
+        secp256k1_scalar_set_int(&one, 1);
+        if (secp256k1_rand32()&1) {
+            secp256k1_scalar_negate(&one, &one);
+        }
+        for (i = 0; i < nrings; i++) {
+            random_scalar_order(&sec[i]);
+            random_scalar_order(&k[i]);
+            for (j = 0; j < rsizes[i]; j++) {
+                random_scalar_order(&s[c + j]);
+                secp256k1_ecmult_gen(&ctx->ecmult_gen_ctx, &pubs[c + j], &sec[i]);
+            }
+            c += rsizes[i];
+        }
+
+        time_t start = clock();
+        for (i = 0; i < TRIAL; i++)
+        {
+            CHECK(secp256k1_borromean_sign(&ctx->ecmult_ctx, &ctx->ecmult_gen_ctx, e0, s, pubs, k, sec, rsizes, secidx, nrings, m, 32));
+        }
+        time_t end = clock();
+        double prove_time = ((double) (end - start)) / CLOCKS_PER_SEC * 1000; // in microseconds
+
+        start = clock();
+        for (i = 0; i < TRIAL; i++)
+        {
+            CHECK(secp256k1_borromean_verify(&ctx->ecmult_ctx, NULL, e0, s, pubs, rsizes, nrings, m, 32));
+        }
+        end = clock();
+        double verify_time = ((double) (end - start)) / CLOCKS_PER_SEC * 1000; // in microseconds
+
+        printf("%d, %f, %f\n", 32 * (1 + asize), prove_time/TRIAL, verify_time/TRIAL);
+    }
+}
+
+
+
 #endif

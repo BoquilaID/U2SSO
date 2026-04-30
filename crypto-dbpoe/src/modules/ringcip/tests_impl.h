@@ -70,7 +70,7 @@ int test_boquila(void) {
     // ==============================================
 
     int N = rctx.n;
-    for (int m = 1; m < rctx.m; m++) {
+    for (int m = 1; m <= rctx.m; m++) {
         pk_t mpks[N];
         uint8_t msks[N][64];
         for (int i = 0; i < N; i++) {
@@ -103,7 +103,7 @@ int test_boquila(void) {
     }
 
     N = rctx.n -1;
-    for (int m = 1; m < rctx.m; m++) {
+    for (int m = 1; m <= rctx.m; m++) {
         pk_t mpks[N];
         uint8_t msks[N][64];
         for (int i = 0; i < N; i++) {
@@ -235,7 +235,7 @@ int test_boquila_bench(void) {
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;
-    for (int m = 3; m < rctx.m; m++) {
+    for (int m = 3; m <= rctx.m; m++) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
@@ -250,8 +250,8 @@ int test_boquila_bench(void) {
         end = clock();
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
         free(proof);
-        N *= rctx.n;
         printf("%d, %d, %d, %f, %f\n", N, m, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
+        N *= rctx.n;
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
@@ -301,7 +301,7 @@ int test_boquila_3_bench(void) {
     int test_cases = 10;
     double proving_time = 0;
     double verify_time = 0;
-    for (int m = 2; m < rctx.m; m++) {
+    for (int m = 2; m <= rctx.m; m++) {
         uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_get_size(&rctx, m) * sizeof(uint8_t));
         clock_t begin = clock();
         for (t = 0; t < test_cases; t++) {
@@ -316,8 +316,8 @@ int test_boquila_3_bench(void) {
         end = clock();
         double verify_time = (double)(end - begin) / CLOCKS_PER_SEC;
         free(proof);
-        N *= rctx.n;
         printf("%d, %d, %d, %f, %f\n", N, m, secp256k1_zero_mcom_get_size(&rctx, m), proving_time/test_cases, verify_time/test_cases);
+        N *= rctx.n;
     }
     secp256k1_ringcip_context_clear(&rctx);
 }
@@ -370,7 +370,7 @@ int test_boquila_DBPoE_bench(void) {
         int test_cases = 10;
         double proving_time = 0;
         double verify_time = 0;
-        for (int m = 3; m < rctx.m; m++) {
+        for (int m = 3; m <= rctx.m; m++) {
             uint8_t nullifier[32];
             uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
             clock_t begin = clock();
@@ -388,9 +388,9 @@ int test_boquila_DBPoE_bench(void) {
             end = clock();
             double verify_time = (double) (end - begin) / CLOCKS_PER_SEC;
             free(proof);
-            N *= rctx.n;
             printf("%d, %d, %d, %f, %f, %d\n", N, m, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m),
-                   proving_time / test_cases, verify_time / test_cases, topic_size);
+            proving_time / test_cases, verify_time / test_cases, topic_size);
+            N *= rctx.n;
         }
         secp256k1_ringcip_DBPoE_context_clear(&rctx);
     }
@@ -446,7 +446,7 @@ int test_boquila_DBPoE_topic_bench(void) {
         int test_cases = 10;
         double proving_time = 0;
         double verify_time = 0;
-        for (int m = 2; m < rctx.m; m++) {
+        for (int m = 2; m <= rctx.m; m++) {
             uint8_t nullifier[32];
             uint8_t *proof = (uint8_t *) malloc(secp256k1_zero_mcom_DBPoE_get_size(&rctx, m) * sizeof(uint8_t));
             clock_t begin = clock();
@@ -464,9 +464,9 @@ int test_boquila_DBPoE_topic_bench(void) {
             end = clock();
             double verify_time = (double) (end - begin) / CLOCKS_PER_SEC;
             free(proof);
-            N *= rctx.n;
             printf("%d, %d, %d, %f, %f, %d\n", N, m, secp256k1_zero_mcom_DBPoE_get_size(&rctx, m),
-                   proving_time / test_cases, verify_time / test_cases, topic_size);
+            proving_time / test_cases, verify_time / test_cases, topic_size);
+            N *= rctx.n;
         }
         secp256k1_ringcip_DBPoE_context_clear(&rctx);
     }

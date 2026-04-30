@@ -46,7 +46,6 @@ static int count = 64;
 static secp256k1_context *ctx = NULL;
 
 
-# include "modules/ringcip/tests_impl.h"
 #include "modules/ringcip/tests_impl.h"
 
 static void counting_illegal_callback_fn(const char* str, void* data) {
@@ -77,6 +76,56 @@ void random_scalar_order_test(secp256k1_scalar *num) {
         break;
     } while(1);
 }
+
+void random_field_element_test(secp256k1_fe *fe) {
+    do {
+        unsigned char b32[32];
+        secp256k1_rand256_test(b32);
+        if (secp256k1_fe_set_b32(fe, b32)) {
+            break;
+        }
+    } while(1);
+}
+
+void random_group_element_test(secp256k1_ge *ge) {
+    unsigned char b;
+    secp256k1_fe fe;
+    do {
+        random_field_element_test(&fe);
+        b = secp256k1_rand_bits(1);
+    } while (!secp256k1_ge_set_xo_var(ge, &fe, b));
+}
+
+void random_group_element_jacobian_test(secp256k1_gej *gej, const secp256k1_ge *ge) {
+    secp256k1_fe z;
+    random_field_element_test(&z);
+    secp256k1_gej_set_ge(gej, ge);
+    secp256k1_fe_mul(&gej->z, &gej->z, &z);
+    secp256k1_fe_sqr(&z, &z);
+    secp256k1_fe_mul(&gej->x, &gej->x, &z);
+    secp256k1_fe_mul(&z, &z, &gej->z);
+    secp256k1_fe_mul(&gej->y, &gej->y, &z);
+}
+
+void random_scalar_order(secp256k1_scalar *num) {
+    do {
+        unsigned char b32[32];
+        int overflow = 0;
+        secp256k1_rand256(b32);
+        secp256k1_scalar_set_b32(num, b32, &overflow);
+        if (overflow || secp256k1_scalar_is_zero(num)) {
+            continue;
+        }
+        break;
+    } while(1);
+}
+
+#ifdef ENABLE_MODULE_RANGEPROOF
+#ifndef TRIAL
+#define TRIAL 10
+#endif
+#include "modules/rangeproof/tests_impl.h"
+#endif
 
 
 void run_context_tests(int use_prealloc) {
@@ -336,6 +385,13 @@ int main(int argc, char **argv) {
     test_boquila_DBPoE_topic_bench();
 
     printf("passed ringcip tests!\n");
+
+    printf("Borromean details for varying anonymityset including decoys ===================\n");
+#ifdef ENABLE_MODULE_RANGEPROOF
+    test_borromean_sig();
+#else
+    printf("Rangeproof module disabled; Borromean test unavailable.\n");
+#endif
 
 
 #ifdef  DO_OTHER_TESTS
